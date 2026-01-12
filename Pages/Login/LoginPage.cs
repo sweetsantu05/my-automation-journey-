@@ -1,90 +1,60 @@
 using Microsoft.Playwright;
+using WiseUltimaTests.Pages.PreRequisites;
 
 namespace WiseUltimaTests.Pages.Login
 {
     public class LoginPage
     {
         private readonly IPage _page;
+        private readonly BasicSetup _basicSetup;
 
         public LoginPage(IPage page)
         {
             _page = page;
+            _basicSetup = new BasicSetup(page);
         }
 
-        // Inputs
-        private ILocator EmailInput =>
-            _page.GetByPlaceholder("Enter your email");
-
-        private ILocator PasswordInput =>
-            _page.GetByPlaceholder("Enter your password");
-
-        private ILocator SignInButton =>
-            _page.GetByRole(AriaRole.Button, new() { Name = "Sign In" });
-
-        // Validation messages
-        private ILocator EmailRequiredMessage =>
-            _page.GetByText("Email is required", new() { Exact = true });
-
-        private ILocator PasswordRequiredMessage =>
-            _page.GetByText("Required", new() { Exact = true });
-
-        private ILocator InvalidCredentialToast =>
-            _page.GetByText("Invalid email or password", new() { Exact = false });
-
-        public async Task NavigateToLoginPageAsync(string loginUrl)
+        public async Task NavigateToLoginPageAsync()
         {
-            await _page.GotoAsync(loginUrl);
-            await EmailInput.WaitForAsync();
-        }
-
-        public async Task LoginAsync(string username, string password)
-        {
-            await EmailInput.FillAsync(username);
-            await PasswordInput.FillAsync(password);
-            await SignInButton.ClickAsync();
-        }
-
-        public async Task<bool> IsEmailRequiredDisplayedAsync()
-        {
-            return await EmailRequiredMessage.IsVisibleAsync();
-        }
-
-        public async Task<bool> IsPasswordRequiredDisplayedAsync()
-        {
-            return await PasswordRequiredMessage.IsVisibleAsync();
-        }
-
-        public async Task<bool> IsInvalidCredentialToastDisplayedAsync()
-        {
-            await _page.WaitForSelectorAsync(
-                "text=Invalid email or password",
-                new PageWaitForSelectorOptions
+            await _page.GotoAsync(
+                WiseUltimaTests.Utils.ConfigReader.Get("LoginPageUrl"),
+                new PageGotoOptions
                 {
-                    Timeout = 5000,
-                    State = WaitForSelectorState.Visible
+                    WaitUntil = WaitUntilState.DOMContentLoaded
                 });
 
-            return await _page
-                .GetByText("Invalid email or password", new() { Exact = false })
-                .IsVisibleAsync();
+            await _page.GetByPlaceholder("Enter your email").WaitForAsync();
         }
 
-        public async Task<bool> IsSignInButtonClickableAsync()
+        public async Task ValidateEmptyUserName()
         {
-            return await _page
-                .GetByRole(AriaRole.Button, new() { Name = "Sign In" })
-                .IsEnabledAsync();
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_username");
+
+            await _basicSetup.LoginAsync(user.Username, user.Password);
         }
 
-        public async Task LoginAsMigrateAdminAsync(string username, string password)
+        public async Task ValidateEmptyPassword()
         {
-            await LoginAsync(username, password);
-        }
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_password");
 
-        public async Task LoginAsSuperAdminAsync(string username, string password)
+            await _basicSetup.LoginAsync(user.Username, user.Password);
+        }
+        public async Task ValidateInvalidLogin()
         {
-            await LoginAsync(username, password);
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("invalid");
+
+            await _basicSetup.LoginAsync(user.Username, user.Password);
         }
 
+        public async Task ValidateValidLogin()
+        {
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+
+            await _basicSetup.LoginAsync(user.Username, user.Password);
+        }
     }
 }

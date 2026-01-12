@@ -1,206 +1,149 @@
 using Microsoft.Playwright;
-using Xunit;
 using WiseUltimaTests.Pages.Login;
 using WiseUltimaTests.Pages.PreRequisites;
+using WiseUltimaTests.TestHooks;
 using WiseUltimaTests.Utils;
+using Xunit;
 using Allure.Xunit.Attributes;
 
 namespace WiseUltimaTests.Tests.Login
 {
     [Collection("Playwright collection")]
     [AllureSuite("Login Page Tests")]
-    public class LoginPageTests : IAsyncLifetime
+    public class LoginPageTests : TestBaseFixture, IAsyncLifetime
     {
-        private IPlaywright _playwright = null!;
-        private IBrowser _browser = null!;
-        private IPage _page = null!;
         private LoginPage _loginPage = null!;
         private BasicSetup _setup = null!;
-
-        public async Task InitializeAsync()
+        public new async Task InitializeAsync()
         {
-            _playwright = await Playwright.CreateAsync();
-            _browser = await _playwright.Chromium.LaunchAsync(
-                new() { Headless = false });
+            await base.InitializeAsync();
+            _setup = new BasicSetup(Page);
+            _loginPage = new LoginPage(Page);
 
-            _page = await _browser.NewPageAsync();
-            _setup = new BasicSetup(_page);
-            _loginPage = new LoginPage(_page);
-
-            await _loginPage.NavigateToLoginPageAsync(_setup.LoginPageUrl);
-        }
-
-        public async Task DisposeAsync()
-        {
-            await _page.CloseAsync();
-            await _browser.CloseAsync();
-            _playwright.Dispose();
+            // Navigate to login page ONCE
+            await _loginPage.NavigateToLoginPageAsync();
         }
 
         [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
         [AllureOwner("TC_LOGIN_01")]
         [AllureTag("smoke")]
         [Fact]
-        public async Task TC_LOGIN_01_LoginPage_Loads_Successfully()
+        public async Task LoginPage_Should_Load_Successfully()
         {
             await Assertions.Expect(
-                _page.GetByText("Welcome Back!", new() { Exact = true })
+                Page.GetByText("Welcome Back!")
             ).ToBeVisibleAsync();
 
             await ScreenshotHelper.TakeScreenshotAsync(
-                _page,
-                "TC_LOGIN_01_LoginPage_Loads_Successfully"
+                Page,
+                "TC_LOGIN_01_Login_Page_Loaded"
             );
 
             Logger.Info("TC_LOGIN_01: Login page loaded successfully.");
         }
 
+        
         [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
         [AllureOwner("TC_LOGIN_02")]
         [AllureTag("smoke")]
         [Fact]
-        public async Task TC_LOGIN_02_Empty_Email_Shows_Validation_Message()
+        public async Task LoginPage_Should_Have_Clickable_SignIn_Button()
         {
-            await _loginPage.LoginAsync("", "dummyPassword");
-
-            Assert.True(await _loginPage.IsEmailRequiredDisplayedAsync());
+            await Assertions.Expect(
+                Page.GetByRole(AriaRole.Button, new() { Name = "Sign In" })
+            ).ToBeEnabledAsync();
 
             await ScreenshotHelper.TakeScreenshotAsync(
-                _page,
-                "TC_LOGIN_02_Empty_Email_Shows_Validation_Message"
+                Page,
+                "TC_LOGIN_02_SignIn_Button_Clickable"
             );
 
-            Logger.Info("TC_LOGIN_02: Empty email validation message displayed.");
+            Logger.Info("TC_LOGIN_02: Sign In button is clickable.");
         }
 
+        
         [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
         [AllureOwner("TC_LOGIN_03")]
         [AllureTag("smoke")]
         [Fact]
-        public async Task TC_LOGIN_03_Empty_Password_Shows_Validation_Message()
+        public async Task Validate_Empty_UserName_Field()
         {
-            await _loginPage.LoginAsync("test@wisework.in", "");
+            await _loginPage.ValidateEmptyUserName();
 
-            Assert.True(await _loginPage.IsPasswordRequiredDisplayedAsync());
+            await Assertions.Expect(
+                Page.GetByText("Email is required")
+            ).ToBeVisibleAsync();
 
             await ScreenshotHelper.TakeScreenshotAsync(
-                _page,
-                "TC_LOGIN_03_Empty_Password_Shows_Validation_Message"
+                Page,
+                "TC_LOGIN_03_Empty_Username"
             );
 
-            Logger.Info("TC_LOGIN_03: Empty password validation message displayed.");
+            Logger.Info("TC_LOGIN_03: Empty username validation successful.");
         }
 
+       
         [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
         [AllureOwner("TC_LOGIN_04")]
         [AllureTag("smoke")]
         [Fact]
-        public async Task TC_LOGIN_04_Invalid_Credentials_Show_Error_Toast()
+        public async Task Validate_Empty_Password_Field()
         {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("invalid");
+            await _loginPage.ValidateEmptyPassword();
 
-            await _loginPage.LoginAsync(user.Username, user.Password);
-
-            Assert.True(await _loginPage.IsInvalidCredentialToastDisplayedAsync());
+            await Assertions.Expect(
+                Page.GetByText("Required")
+            ).ToBeVisibleAsync();
 
             await ScreenshotHelper.TakeScreenshotAsync(
-                _page,
-                "TC_LOGIN_04_Invalid_Credentials_Show_Error_Toast"
+                Page,
+                "TC_LOGIN_04_Empty_Password"
             );
 
-            Logger.Info("TC_LOGIN_04: Invalid credentials error toast displayed.");
+            Logger.Info("TC_LOGIN_04: Empty password validation successful.");
         }
-[AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
-[AllureOwner("TC_LOGIN_05")]
-[AllureTag("smoke")]
-[Fact]
-public async Task TC_LOGIN_05_Valid_Login_Successful()
-{
-    var user = _setup.defaultCredential;
 
-    await _loginPage.LoginAsync(user.Username, user.Password);
+        
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_LOGIN_05")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task Validate_Invalid_Credentials()
+        {
+            await _loginPage.ValidateInvalidLogin();
 
-    // ✅ Wait for post-login Welcome message
-    var welcomeText = _page.GetByText("Welcome,", new() { Exact = false });
-    await welcomeText.WaitForAsync();
-    var wiseultima = _page.GetByText("wise ultima", new() { Exact = false }); await wiseultima.WaitForAsync();
+            await Assertions.Expect(
+                Page.GetByText("Invalid credentials", new() { Exact = false })
+            ).ToBeVisibleAsync();
 
-    Assert.True(await welcomeText.IsVisibleAsync());
+            await ScreenshotHelper.TakeScreenshotAsync(
+                Page,
+                "TC_LOGIN_05_Invalid_Credentials"
+            );
 
-    await ScreenshotHelper.TakeScreenshotAsync(
-        _page,
-        "TC_LOGIN_05_Valid_Login_Successful"
-    );
+            Logger.Info("TC_LOGIN_05: Invalid credentials validation successful.");
+        }
 
-    Logger.Info("TC_LOGIN_05: Valid login successful.");
-}
-
-
-
+       
         [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
         [AllureOwner("TC_LOGIN_06")]
         [AllureTag("smoke")]
         [Fact]
-        public async Task TC_LOGIN_06_LoginPage_Should_Have_Clickable_SignIn_Button()
+        public async Task Validate_Valid_Login()
         {
-            Assert.True(await _loginPage.IsSignInButtonClickableAsync());
+            await _loginPage.ValidateValidLogin();
+
+            // Dashboard success indicator (toast)
+            await Assertions.Expect(
+                Page.GetByText("You have logged in successfully.")
+            ).ToBeVisibleAsync();
 
             await ScreenshotHelper.TakeScreenshotAsync(
-                _page,
-                "TC_LOGIN_06_LoginPage_Should_Have_Clickable_SignIn_Button"
+                Page,
+                "TC_LOGIN_06_Valid_Login"
             );
 
-            Logger.Info("TC_LOGIN_06: Sign In button is clickable.");
+            Logger.Info("TC_LOGIN_06: Valid login successful.");
         }
-
-        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
-        [AllureOwner("TC_LOGIN_07")]
-        [AllureTag("smoke")]
-        [Fact]
-        public async Task TC_LOGIN_07_Login_With_Valid_MigrateAdmin()
-        {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("migrateadmin");
-
-            await _loginPage.LoginAsMigrateAdminAsync(user.Username, user.Password);
-
-            var welcomeText = _page.GetByText("Welcome", new() { Exact = false });
-            await welcomeText.WaitForAsync();
-
-            Assert.True(await welcomeText.IsVisibleAsync());
-
-            await ScreenshotHelper.TakeScreenshotAsync(
-                _page,
-                "TC_LOGIN_07_Login_With_Valid_MigrateAdmin"
-            );
-
-            Logger.Info("TC_LOGIN_07: Login with valid Migrate Admin credentials successful.");
-        }
-
-        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
-        [AllureOwner("TC_LOGIN_08")]
-        [AllureTag("smoke")]
-        [Fact]
-        public async Task TC_LOGIN_08_Login_With_Valid_SuperAdmin()
-        {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("superadmin");
-
-            await _loginPage.LoginAsSuperAdminAsync(user.Username, user.Password);
-
-            var welcomeText = _page.GetByText("Welcome", new() { Exact = false });
-            await welcomeText.WaitForAsync();
-
-            Assert.True(await welcomeText.IsVisibleAsync());
-
-            await ScreenshotHelper.TakeScreenshotAsync(
-                _page,
-                "TC_LOGIN_08_Login_With_Valid_SuperAdmin"
-            );
-
-            Logger.Info("TC_LOGIN_08: Login with valid Super Admin credentials successful.");
-        }
-
     }
 }

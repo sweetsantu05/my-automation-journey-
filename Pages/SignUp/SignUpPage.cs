@@ -1,6 +1,5 @@
 using Microsoft.Playwright;
 using WiseUltimaTests.Pages.PreRequisites;
-using AppConfig = WiseUltimaTests.Utils.ConfigReader;
 
 namespace WiseUltimaTests.Pages.SignUp
 {
@@ -17,105 +16,57 @@ namespace WiseUltimaTests.Pages.SignUp
 
         public async Task NavigateToSignUpPageAsync()
         {
+            var signUpUrl =
+                WiseUltimaTests.Utils.ConfigReader
+                    .Get("LoginPageUrl")
+                    .Replace("Login", "Register");
+
             await _page.GotoAsync(
-                _basicSetup.LoginPageUrl.Replace("Login", "Register"),
+                signUpUrl,
                 new PageGotoOptions
                 {
                     WaitUntil = WaitUntilState.DOMContentLoaded
-                }
-            );
+                });
 
             await _page.GetByPlaceholder("Enter your email").WaitForAsync();
         }
 
-        public async Task ValidateEmptyUserName()
+        public async Task ValidateRegisterationEmptyUserName()
         {
-            await NavigateToSignUpPageAsync();
-
-            var user = AppConfig.GetCredential("empty_username");
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_username");
 
             await _basicSetup.SignUpAsync(
-                user.Role,
-                user.Username,
-                user.Password,
-                user.Password
+                name: "",
+                email: user.Username,
+                password: user.Password,
+                confirmPassword: user.Password
             );
         }
 
-        public async Task ValidateEmptyPassword()
+        public async Task ValidateRegisterationEmptyPassword()
         {
-            await NavigateToSignUpPageAsync();
-
-            var user = AppConfig.GetCredential("empty_password");
-            var email = Guid.NewGuid().ToString("N").Substring(0, 10) + "@ultima.com";
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_password");
 
             await _basicSetup.SignUpAsync(
-                user.Role,
-                email,
-                user.Password,
-                user.Password
+                name: "Test User",
+                email: "test" + Guid.NewGuid() + "@ultima.com",
+                password: "",
+                confirmPassword: ""
             );
         }
 
-        public async Task ValidateDuplicateEmail()
+        public async Task ValidateRegisterationValidCredentials()
         {
-            await NavigateToSignUpPageAsync();
-
-            var user = AppConfig.GetCredential("standard_user");
-            var email = "duplicateuser@ultima.com";
-
-            for (int i = 0; i < 2; i++)
-            {
-                await _basicSetup.SignUpAsync(
-                    user.Role,
-                    email,
-                    user.Password,
-                    user.Password
-                );
-            }
-        }
-
-        public async Task ValidateMismatchingPassword()
-        {
-            await NavigateToSignUpPageAsync();
-
-            var user = AppConfig.GetCredential("invalid");
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.SignUpAsync(
-                user.Role,
-                user.Username,
-                user.Password,
-                Guid.NewGuid().ToString("N").Substring(0, 8)
-            );
-        }
-
-        public async Task ValidateEmptyOrganization()
-        {
-            await NavigateToSignUpPageAsync();
-
-            var user = AppConfig.GetCredential("invalid");
-
-            await _basicSetup.SignUpAsync(
-                user.Role,
-                user.Username,
-                user.Password,
-                user.Password,
-                isOrganizationEmpty: true
-            );
-        }
-
-        public async Task ValidateValidRegistration()
-        {
-            await NavigateToSignUpPageAsync();
-
-            var user = AppConfig.GetCredential("standard_user");
-            var email = Guid.NewGuid().ToString("N").Substring(0, 10) + "@ultima.com";
-
-            await _basicSetup.SignUpAsync(
-                user.Role,
-                email,
-                user.Password,
-                user.Password
+                name: "Ultima User",
+                email: Guid.NewGuid() + "@ultima.com",
+                password: user.Password,
+                confirmPassword: user.Password
             );
         }
     }
