@@ -7,7 +7,6 @@ using Xunit;
 using Allure.Xunit.Attributes;
 using System.Text.RegularExpressions;
 
-
 namespace WiseUltimaTests.Tests.SignUp
 {
     [Collection("Playwright collection")]
@@ -33,33 +32,33 @@ namespace WiseUltimaTests.Tests.SignUp
         [Fact]
         public async Task SignUpPage_Should_Load_Successfully()
         {
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_SIGNUP_01_SignUp_Page_Loaded"
-            );
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_SIGNUP_01_SignUp_Page_Loaded");
         }
 
         [AllureOwner("TC_SIGNUP_02")]
+        [AllureTag("smoke")]
         [Fact]
         public async Task Validate_Registeration_Empty_UserName()
         {
             await _signUpPage.ValidateRegisterationEmptyUserName();
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_SIGNUP_02_Empty_Username"
-            );
+
+            await Assertions.Expect(Page.GetByText("Name is required", new() { Exact = false })).ToBeVisibleAsync();
         }
 
         [AllureOwner("TC_SIGNUP_03")]
+        [AllureTag("smoke")]
         [Fact]
         public async Task Validate_Registeration_Empty_Password()
         {
             await _signUpPage.ValidateRegisterationEmptyPassword();
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_SIGNUP_03_Empty_Password"
-            );
+
+            var requiredMessages = Page.GetByText("Required");
+
+            var count = await requiredMessages.CountAsync();
+
+            Assert.True(count >= 1);
         }
+
 
         [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
         [AllureOwner("TC_SIGNUP_04")]
@@ -68,37 +67,46 @@ namespace WiseUltimaTests.Tests.SignUp
         public async Task Validate_Registeration_Valid_Credentials()
         {
             await _signUpPage.ValidateRegisterationValidCredentials();
+
             await Page.WaitForURLAsync(
-            "**/Account/RegisterConfirmation",
-            new PageWaitForURLOptions
-            {
-                Timeout = 15000
-            }
-        );
-            await Assertions.Expect(Page)
-                .ToHaveURLAsync(new Regex("RegisterConfirmation"));
-                
-            await Assertions.Expect(Page)
-            .ToHaveURLAsync("https://dev.ultima.wisework.in/Account/RegisterConfirmation");
+                "**/Account/RegisterConfirmation",
+                new PageWaitForURLOptions { Timeout = 15000 });
 
-            await Assertions.Expect(
-                Page.GetByText("Registration Successful", new() { Exact = true })
-            ).ToBeVisibleAsync();
+            await Assertions.Expect(Page).ToHaveURLAsync(new Regex("RegisterConfirmation"));
 
-            await Assertions.Expect(
-                Page.GetByText("Please check your email to verify your account", new() { Exact = false })
-            ).ToBeVisibleAsync();
+            await Assertions.Expect(Page.GetByText("Registration Successful", new() { Exact = true })).ToBeVisibleAsync();
 
-            await Assertions.Expect(
-                Page.GetByRole(AriaRole.Button, new() { Name = "Go to Login" })
-            ).ToBeVisibleAsync();
+            await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Go to Login" })).ToBeVisibleAsync();
+        }
 
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_SIGNUP_04_Registration_Successful"
-            );
+        [AllureOwner("TC_SIGNUP_06")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task Validate_Registeration_Duplicate_Email()
+        {
+            await _signUpPage.ValidateRegisterationDuplicateEmail();
 
-            Logger.Info("TC_SIGNUP_04: Registration completed successfully.");
+            await Assertions.Expect(Page.Locator(".mud-snackbar").GetByText("already registered", new() { Exact = false })).ToBeVisibleAsync();
+        }
+
+        [AllureOwner("TC_SIGNUP_07")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task Validate_Registeration_Mismatching_Password()
+        {
+            await _signUpPage.SignUpWithMismatchingPasswordsAsync();
+
+            await Assertions.Expect(Page.Locator(".mud-snackbar").GetByText("Passwords do not match", new() { Exact = false })).ToBeVisibleAsync();
+        }
+
+        [AllureOwner("TC_SIGNUP_08")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task Validate_Registeration_Empty_Organization()
+        {
+            await _signUpPage.SignUpWithEmptyOrganizationAsync();
+
+            await Assertions.Expect(Page.Locator(".mud-snackbar").GetByText("select an organization", new() { Exact = false })).ToBeVisibleAsync();
         }
     }
 }

@@ -20,7 +20,6 @@ namespace WiseUltimaTests.Tests.Login
             _setup = new BasicSetup(Page);
             _loginPage = new LoginPage(Page);
 
-            // Navigate to login page ONCE
             await _loginPage.NavigateToLoginPageAsync();
         }
 
@@ -30,14 +29,9 @@ namespace WiseUltimaTests.Tests.Login
         [Fact]
         public async Task LoginPage_Should_Load_Successfully()
         {
-            await Assertions.Expect(
-                Page.GetByText("Welcome Back!")
-            ).ToBeVisibleAsync();
+            await Assertions.Expect(Page.GetByText("Welcome Back!")).ToBeVisibleAsync();
 
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_LOGIN_01_Login_Page_Loaded"
-            );
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_01_Login_Page_Loaded");
 
             Logger.Info("TC_LOGIN_01: Login page loaded successfully.");
         }
@@ -47,16 +41,11 @@ namespace WiseUltimaTests.Tests.Login
         [AllureOwner("TC_LOGIN_02")]
         [AllureTag("smoke")]
         [Fact]
-        public async Task LoginPage_Should_Have_Clickable_SignIn_Button()
+        public async Task LoginPage_Should_Have_Clickable_Button()
         {
-            await Assertions.Expect(
-                Page.GetByRole(AriaRole.Button, new() { Name = "Sign In" })
-            ).ToBeEnabledAsync();
+            await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Sign In" })).ToBeEnabledAsync();
 
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_LOGIN_02_SignIn_Button_Clickable"
-            );
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_02_SignIn_Button_Clickable");
 
             Logger.Info("TC_LOGIN_02: Sign In button is clickable.");
         }
@@ -70,14 +59,9 @@ namespace WiseUltimaTests.Tests.Login
         {
             await _loginPage.ValidateEmptyUserName();
 
-            await Assertions.Expect(
-                Page.GetByText("Email is required")
-            ).ToBeVisibleAsync();
+            await Assertions.Expect(Page.GetByText("Email is required")).ToBeVisibleAsync();
 
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_LOGIN_03_Empty_Username"
-            );
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_03_Empty_Username");
 
             Logger.Info("TC_LOGIN_03: Empty username validation successful.");
         }
@@ -91,14 +75,9 @@ namespace WiseUltimaTests.Tests.Login
         {
             await _loginPage.ValidateEmptyPassword();
 
-            await Assertions.Expect(
-                Page.GetByText("Required")
-            ).ToBeVisibleAsync();
+            await Assertions.Expect(Page.GetByText("Required")).ToBeVisibleAsync();
 
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_LOGIN_04_Empty_Password"
-            );
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_04_Empty_Password");
 
             Logger.Info("TC_LOGIN_04: Empty password validation successful.");
         }
@@ -112,14 +91,9 @@ namespace WiseUltimaTests.Tests.Login
         {
             await _loginPage.ValidateInvalidLogin();
 
-            await Assertions.Expect(
-                Page.GetByText("Invalid credentials", new() { Exact = false })
-            ).ToBeVisibleAsync();
+            await Assertions.Expect(Page.GetByText("Invalid email or password. Please check your credentials and try again", new() { Exact = false })).ToBeVisibleAsync();
 
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_LOGIN_05_Invalid_Credentials"
-            );
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_05_Invalid_Credentials");
 
             Logger.Info("TC_LOGIN_05: Invalid credentials validation successful.");
         }
@@ -133,17 +107,45 @@ namespace WiseUltimaTests.Tests.Login
         {
             await _loginPage.ValidateValidLogin();
 
-            // Dashboard success indicator (toast)
-            await Assertions.Expect(
-                Page.GetByText("You have logged in successfully.")
-            ).ToBeVisibleAsync();
+            await Assertions.Expect(Page.GetByText("You have logged in successfully.")).ToBeVisibleAsync();
 
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_LOGIN_06_Valid_Login"
-            );
-
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_06_Valid_Login");
             Logger.Info("TC_LOGIN_06: Valid login successful.");
+        }
+
+
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_LOGIN_07")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task Validate_SuperAdmin_Account()
+        {
+            await Assertions.Expect(Page).ToHaveURLAsync(WiseUltimaTests.Utils.ConfigReader.Get("LoginPageUrl"));
+
+            await _loginPage.ValidateSuperAdminAccount(Page);
+
+            await _setup.WaitForPageAsync(3);
+
+            await Assertions.Expect(Page).ToHaveTitleAsync("Wise Ultima");
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page, "TC_LOGIN_06_Login_With_Valid_SuperAdmin_Successful");
+            Logger.Info("TC_LOGIN_06: Login with valid Super Admin credentials successful.");
+        }
+
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_LOGIN_08")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task Validate_Ultima_Admin_Account()
+        {
+            await _loginPage.ValidateUltimaAdminAccount(Page);
+
+            await _setup.WaitForPageAsync(3);
+
+            await Assertions.Expect(Page).ToHaveTitleAsync("Wise Ultima");
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page, "TC_LOGIN_05_Login_With_Valid_MigrateAdmin_Successful");
+            Logger.Info("TC_LOGIN_05: Login with valid Migrate Admincredentials successful.");
         }
     }
 }

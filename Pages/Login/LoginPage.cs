@@ -41,6 +41,7 @@ namespace WiseUltimaTests.Pages.Login
 
             await _basicSetup.LoginAsync(user.Username, user.Password);
         }
+
         public async Task ValidateInvalidLogin()
         {
             var user =
@@ -53,6 +54,26 @@ namespace WiseUltimaTests.Pages.Login
         {
             var user =
                 WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+
+            await _basicSetup.LoginAsync(user.Username, user.Password);
+        }
+
+        public async Task ValidateSuperAdminAccount(IPage page)
+        {
+            await NavigateToLoginPageAsync();
+
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("superadmin");
+
+            await _basicSetup.LoginAsync(user.Username, user.Password);
+        }
+
+        public async Task ValidateUltimaAdminAccount(IPage page)
+        {
+            await NavigateToLoginPageAsync();
+
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("ultimaadmin");
 
             await _basicSetup.LoginAsync(user.Username, user.Password);
         }

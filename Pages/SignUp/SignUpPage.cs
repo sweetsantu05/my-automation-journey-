@@ -21,20 +21,22 @@ namespace WiseUltimaTests.Pages.SignUp
                     .Get("LoginPageUrl")
                     .Replace("Login", "Register");
 
-            await _page.GotoAsync(
-                signUpUrl,
-                new PageGotoOptions
-                {
-                    WaitUntil = WaitUntilState.DOMContentLoaded
-                });
+            await _page.GotoAsync(signUpUrl);
+            await _page.WaitForSelectorAsync("input[placeholder='Enter your email']");
+        }
 
-            await _page.GetByPlaceholder("Enter your email").WaitForAsync();
+        public async Task VerifySignUpButtonIsClickableAsync()
+        {
+            await _page.GetByRole(
+                AriaRole.Button,
+                new() { Name = "Sign Up" }
+            ).IsEnabledAsync();
         }
 
         public async Task ValidateRegisterationEmptyUserName()
         {
             var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_username");
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.SignUpAsync(
                 name: "",
@@ -47,11 +49,11 @@ namespace WiseUltimaTests.Pages.SignUp
         public async Task ValidateRegisterationEmptyPassword()
         {
             var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_password");
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.SignUpAsync(
-                name: "Test User",
-                email: "test" + Guid.NewGuid() + "@ultima.com",
+                name: "Test Account",
+                email: user.Username,
                 password: "",
                 confirmPassword: ""
             );
@@ -62,11 +64,54 @@ namespace WiseUltimaTests.Pages.SignUp
             var user =
                 WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
+            var uniqueEmail =
+                $"autouser_{DateTime.UtcNow.Ticks}@wisework.in";
+
             await _basicSetup.SignUpAsync(
-                name: "Ultima User",
-                email: Guid.NewGuid() + "@ultima.com",
+                name: "Test Account",
+                email: uniqueEmail,
                 password: user.Password,
                 confirmPassword: user.Password
+            );
+        }
+
+        public async Task ValidateRegisterationDuplicateEmail()
+        {
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+
+            await _basicSetup.SignUpAsync(
+                name: "Test Account",
+                email: user.Username,
+                password: user.Password,
+                confirmPassword: user.Password
+            );
+        }
+
+        public async Task SignUpWithMismatchingPasswordsAsync()
+        {
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+
+            await _basicSetup.SignUpAsync(
+                name: "Test Account",
+                email: user.Username,
+                password: user.Password,
+                confirmPassword: user.Password + "1"
+            );
+        }
+
+        public async Task SignUpWithEmptyOrganizationAsync()
+        {
+            var user =
+                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+
+            await _basicSetup.SignUpAsync(
+                name: "Test Account",
+                email: user.Username,
+                password: user.Password,
+                confirmPassword: user.Password,
+                isOrganizationEmpty: true
             );
         }
     }
