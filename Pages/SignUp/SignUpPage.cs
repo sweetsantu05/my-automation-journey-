@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Playwright;
 using WiseUltimaTests.Pages.PreRequisites;
 
@@ -16,8 +17,7 @@ namespace WiseUltimaTests.Pages.SignUp
 
         public async Task NavigateToSignUpPageAsync()
         {
-            var signUpUrl =
-                WiseUltimaTests.Utils.ConfigReader
+            var signUpUrl = WiseUltimaTests.Utils.ConfigReader
                     .Get("LoginPageUrl")
                     .Replace("Login", "Register");
 
@@ -35,8 +35,7 @@ namespace WiseUltimaTests.Pages.SignUp
 
         public async Task ValidateRegisterationEmptyUserName()
         {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+            var user = WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.SignUpAsync(
                 name: "",
@@ -48,8 +47,7 @@ namespace WiseUltimaTests.Pages.SignUp
 
         public async Task ValidateRegisterationEmptyPassword()
         {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+            var user = WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.SignUpAsync(
                 name: "Test Account",
@@ -64,8 +62,7 @@ namespace WiseUltimaTests.Pages.SignUp
             var user =
                 WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
-            var uniqueEmail =
-                $"autouser_{DateTime.UtcNow.Ticks}@wisework.in";
+            var uniqueEmail = $"autouser_{DateTime.UtcNow.Ticks}@wisework.in";
 
             await _basicSetup.SignUpAsync(
                 name: "Test Account",
@@ -77,8 +74,7 @@ namespace WiseUltimaTests.Pages.SignUp
 
         public async Task ValidateRegisterationDuplicateEmail()
         {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+            var user = WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.SignUpAsync(
                 name: "Test Account",
@@ -90,8 +86,7 @@ namespace WiseUltimaTests.Pages.SignUp
 
         public async Task SignUpWithMismatchingPasswordsAsync()
         {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+            var user = WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.SignUpAsync(
                 name: "Test Account",
@@ -103,8 +98,7 @@ namespace WiseUltimaTests.Pages.SignUp
 
         public async Task SignUpWithEmptyOrganizationAsync()
         {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
+            var user = WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.SignUpAsync(
                 name: "Test Account",

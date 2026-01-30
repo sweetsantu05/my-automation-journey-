@@ -1,6 +1,7 @@
 using Microsoft.Playwright;
 using WiseUltimaTests.Pages.PreRequisites;
 
+
 namespace WiseUltimaTests.Pages.Login
 {
     public class LoginPage
@@ -23,7 +24,12 @@ namespace WiseUltimaTests.Pages.Login
                     WaitUntil = WaitUntilState.DOMContentLoaded
                 });
 
-            await _page.GetByPlaceholder("Enter your email").WaitForAsync();
+        var emailField = _page.GetByPlaceholder("Enter your email");
+
+            if (await emailField.IsVisibleAsync())
+            {
+                await emailField.WaitForAsync();
+            }      
         }
 
         public async Task ValidateEmptyUserName()

@@ -1,7 +1,7 @@
 using WiseUltimaTests.TestHooks;
 using Xunit;
 
-[CollectionDefinition("Playwright collection")]
+[CollectionDefinition("Playwright collection",DisableParallelization = true)]
 public class PlaywrightCollection : ICollectionFixture<GlobalTestFixture>
 {
     

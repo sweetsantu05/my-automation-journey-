@@ -32,9 +32,12 @@ namespace WiseUltimaTests.Tests.SignUp
         [Fact]
         public async Task SignUpPage_Should_Load_Successfully()
         {
+            await Assertions.Expect(Page.GetByText("Create Your Account",new(){Exact=false})).ToBeVisibleAsync();
             await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_SIGNUP_01_SignUp_Page_Loaded");
+            Logger.Info("TC_SIGNUP_01: Sign Up page loaded successfully.");
         }
 
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
         [AllureOwner("TC_SIGNUP_02")]
         [AllureTag("smoke")]
         [Fact]
@@ -43,8 +46,13 @@ namespace WiseUltimaTests.Tests.SignUp
             await _signUpPage.ValidateRegisterationEmptyUserName();
 
             await Assertions.Expect(Page.GetByText("Name is required", new() { Exact = false })).ToBeVisibleAsync();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_SIGNUP_02_Empty_Username");
+
+            Logger.Info("TC_SIGNUP_02: Empty username validation successful.");
         }
 
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
         [AllureOwner("TC_SIGNUP_03")]
         [AllureTag("smoke")]
         [Fact]
@@ -57,6 +65,10 @@ namespace WiseUltimaTests.Tests.SignUp
             var count = await requiredMessages.CountAsync();
 
             Assert.True(count >= 1);
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_SIGNUP_03_Empty_Password");
+
+            Logger.Info("TC_SIGNUP_03:Empty Password validiation successful.");
         }
 
 
@@ -77,9 +89,16 @@ namespace WiseUltimaTests.Tests.SignUp
             await Assertions.Expect(Page.GetByText("Registration Successful", new() { Exact = true })).ToBeVisibleAsync();
 
             await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Go to Login" })).ToBeVisibleAsync();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page, "TC_SIGNUP_04_Valid_Credentials");
+
+            Logger.Info("TC_SIGNUP_04: Registration successful with valid credentials.");
+
+
         }
 
-        [AllureOwner("TC_SIGNUP_06")]
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_SIGNUP_05")]
         [AllureTag("smoke")]
         [Fact]
         public async Task Validate_Registeration_Duplicate_Email()
@@ -87,9 +106,15 @@ namespace WiseUltimaTests.Tests.SignUp
             await _signUpPage.ValidateRegisterationDuplicateEmail();
 
             await Assertions.Expect(Page.Locator(".mud-snackbar").GetByText("already registered", new() { Exact = false })).ToBeVisibleAsync();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_SIGNUP_05_Duplicate_Email");
+
+            Logger.Info("TC_SIGNUP_05: Duplicate email validation successful.");
+
         }
 
-        [AllureOwner("TC_SIGNUP_07")]
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_SIGNUP_06")]
         [AllureTag("smoke")]
         [Fact]
         public async Task Validate_Registeration_Mismatching_Password()
@@ -97,9 +122,14 @@ namespace WiseUltimaTests.Tests.SignUp
             await _signUpPage.SignUpWithMismatchingPasswordsAsync();
 
             await Assertions.Expect(Page.Locator(".mud-snackbar").GetByText("Passwords do not match", new() { Exact = false })).ToBeVisibleAsync();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_SIGNUP_06_Password_Mismatch");
+
+            Logger.Info("TC_SIGNUP_06: Password mismatch validation successful.");
         }
 
-        [AllureOwner("TC_SIGNUP_08")]
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_SIGNUP_07")]
         [AllureTag("smoke")]
         [Fact]
         public async Task Validate_Registeration_Empty_Organization()
@@ -107,6 +137,24 @@ namespace WiseUltimaTests.Tests.SignUp
             await _signUpPage.SignUpWithEmptyOrganizationAsync();
 
             await Assertions.Expect(Page.Locator(".mud-snackbar").GetByText("select an organization", new() { Exact = false })).ToBeVisibleAsync();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_SIGNUP_07_Empty_Organization");
+
+            Logger.Info("TC_SIGNUP_07: Empty organization validation successful.");
+        }
+
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_SIGNUP_08")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task SignUpPage_Should_Have_Clickable_SignUp_Button()
+        {
+            await _signUpPage.VerifySignUpButtonIsClickableAsync();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_SIGNUP_08_SignUp_Button_Clickable");
+
+            Logger.Info("TC_SIGNUP_08: Sign Up button is clickable.");
         }
     }
 }
+
