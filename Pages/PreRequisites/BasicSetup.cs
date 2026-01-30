@@ -18,12 +18,11 @@ namespace WiseUltimaTests.Pages.PreRequisites
             await Page.GetByPlaceholder("Enter your email").FillAsync(username);
             await Page.GetByPlaceholder("Enter your password").FillAsync(password);
 
-            await Page.GetByRole(
-                AriaRole.Button,
-                new() { Name = "Sign In" }
-            ).ClickAsync();
-
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+            await _page.GetByRole(
+                    AriaRole.Button,
+                    new() { Name = "Sign In" }
+                )
+                .ClickAsync();
         }
 
         public async Task LoginIfNeededAsync(string username, string password)

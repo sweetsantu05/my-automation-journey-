@@ -107,7 +107,7 @@ namespace WiseUltimaTests.Tests.Login
         {
             await _loginPage.ValidateValidLogin();
 
-            await Assertions.Expect(Page.GetByText("You have logged in successfully.")).ToBeVisibleAsync();
+            await Assertions.Expect(Page.Locator(".alert-filled-success")).ToHaveTextAsync("You have logged in successfully.");
 
             await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_06_Valid_Login");
             Logger.Info("TC_LOGIN_06: Valid login successful.");
