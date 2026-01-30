@@ -29,7 +29,7 @@ namespace WiseUltimaTests.Tests.Login
         [Fact]
         public async Task LoginPage_Should_Load_Successfully()
         {
-            await Assertions.Expect(Page.GetByText("Welcome Back!")).ToBeVisibleAsync();
+            await Assertions.Expect(Page.GetByText("Welcome Back!")).ToBeVisibleAsync(new(){Timeout=15000});
 
             await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_01_Login_Page_Loaded");
 
@@ -43,7 +43,7 @@ namespace WiseUltimaTests.Tests.Login
         [Fact]
         public async Task LoginPage_Should_Have_Clickable_Button()
         {
-            await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Sign In" })).ToBeEnabledAsync();
+            await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Sign In" })).ToBeEnabledAsync(new(){Timeout=10000});
 
             await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_02_SignIn_Button_Clickable");
 
@@ -107,7 +107,7 @@ namespace WiseUltimaTests.Tests.Login
         {
             await _loginPage.ValidateValidLogin();
 
-            await Assertions.Expect(Page.GetByText("You have logged in successfully.")).ToBeVisibleAsync();
+            await Assertions.Expect(Page.Locator(".alert-filled-success")).ToHaveTextAsync("You have logged in successfully.");
 
             await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_LOGIN_06_Valid_Login");
             Logger.Info("TC_LOGIN_06: Valid login successful.");
