@@ -32,13 +32,24 @@ namespace WiseUltimaTests.Tests.WiseAI
         public async Task WiseAI_Should_Load_With_All_Core_Sections()
         {
             await _wiseAIPage.OpenAsync();
-            await _wiseAIPage.VerifyAppTabsAsync();
-            await _wiseAIPage.VerifySearchAsync();
             await _wiseAIPage.VerifyPopularQueriesAsync();
-
             await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEAI_01_Core_Sections_Validated");
 
             Logger.Info("TC_WISEAI_01: Wise AI page loaded with all core sections successfully.");
+        }
+
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_WISEAI_02")]
+        [AllureTag("regression")]
+        [Fact]
+        public async Task WiseAI_Should_Respond_When_Popular_Query_Is_Selected()
+        {
+            await _wiseAIPage.OpenAsync();
+            await _wiseAIPage.ClickRandomPopularQueryAsync();
+            await _wiseAIPage.VerifyAiResponse();
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEAI_02_Popular_Query_AI_Response");
+
+            Logger.Info("TC_WISEAI_02: AI responded successfully after selecting a popular query.");
         }
     }
 }

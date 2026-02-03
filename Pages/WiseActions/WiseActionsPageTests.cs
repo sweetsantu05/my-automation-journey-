@@ -32,18 +32,48 @@ namespace WiseUltimaTests.Tests.WiseActions
         [AllureOwner("TC_WISEACTION_01")]
         [AllureTag("smoke")]
         [Fact]
-        public async Task WiseActions_Should_Load_And_Action_Modal_Should_Work()
+        public async Task WiseActions_Should_Load_Current()
         {
             await _wiseActionsPage.OpenAsync();
-            await _basicSetup.VerifyDashboardTabsAsync();
-            await _basicSetup.VerifyDashboardFiltersAsync();
-            await _basicSetup.WaitForWiseCardsToLoadAsync();
-            await _basicSetup.VerifyWiseCardsAsync();
-            await _wiseActionsPage.OpenActionModalAsync();
-            await _wiseActionsPage.VerifyActionButtonsAsync();
-            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEACTION_01_Action_Modal_Validated");
+            await _basicSetup.ClickRandomCriticalAppAsync();
+            await _basicSetup.SwitchToCurrentAsync();
+            await _basicSetup.WaitForDashboardStableAsync();
+            await _wiseActionsPage.VerifyActButton();
 
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEACTION_01_Action_Modal_Validated");
             Logger.Info("TC_WISEACTION_01: Wise Actions page and action modal validated successfully.");
+        }
+
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_WISEACTION_02")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task WiseActions_Should_Load_W_Pridict()
+        {
+            await _wiseActionsPage.OpenAsync();
+            await _basicSetup.ClickRandomCriticalAppAsync();
+            await _basicSetup.SwitchToWPredictAsync();
+            await _basicSetup.WaitForDashboardStableAsync();
+            await _wiseActionsPage.VerifyActButton();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEACTION_02_Action_Modal_Validated");
+            Logger.Info("TC_WISEACTION_02: Wise Actions page and action modal validated successfully.");
+        }
+
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_WISEACTION_03")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task WiseActions_Should_Load_M_Pridict()
+        {
+            await _wiseActionsPage.OpenAsync();
+            await _basicSetup.ClickRandomCriticalAppAsync();
+            await _basicSetup.SwitchToMPredictAsync();
+            await _basicSetup.WaitForDashboardStableAsync();
+            await _wiseActionsPage.VerifyActButton();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEACTION_03_Action_Modal_Validated");
+            Logger.Info("TC_WISEACTION_03: Wise Actions page and action modal validated successfully.");
         }
     }
 }

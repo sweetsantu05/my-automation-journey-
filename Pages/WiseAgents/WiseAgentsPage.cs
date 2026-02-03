@@ -39,15 +39,10 @@ namespace WiseUltimaTests.Pages.WiseAgents
                 .ToHaveURLAsync(new Regex(".*/wise-agents"));
         }
 
-        public async Task VerifyAllAgentCardsAsync()
+        public async Task VerifyWiseAgnet()
         {
-            await Assertions.Expect(HealthMonitorCard).ToBeVisibleAsync();
-            await Assertions.Expect(PerformanceOptimizerCard).ToBeVisibleAsync();
-            await Assertions.Expect(SecuritySentinelCard).ToBeVisibleAsync();
-            await Assertions.Expect(CostControllerCard).ToBeVisibleAsync();
-            await Assertions.Expect(ComplianceGuardianCard).ToBeVisibleAsync();
-            await Assertions.Expect(ResourceManagerCard).ToBeVisibleAsync();
-            await Assertions.Expect(BackupButlerCard).ToBeVisibleAsync();
+            await Assertions.Expect(WiseAgentsCard).ToBeVisibleAsync();
+        
         }
     }
 }

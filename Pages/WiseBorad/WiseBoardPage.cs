@@ -15,6 +15,7 @@ namespace WiseUltimaTests.Pages.WiseBoard
         {
             await WiseBoardCard.ClickAsync();
             await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-board"));
+            await WaitForDashboardStableAsync();
         }
-    }
+    }           
 }
