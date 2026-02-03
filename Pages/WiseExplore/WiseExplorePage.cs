@@ -20,12 +20,6 @@ namespace WiseUltimaTests.Pages.WiseExplore
             await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-explore"));
             await WaitForDashboardStableAsync();
         }
-        // public async Task VerifyExploreTableHeadersAsync()
-        // {
-        //     await Assertions.Expect(SystemNameHeader).ToBeVisibleAsync();
-        //     await Assertions.Expect(DescriptionHeader).ToBeVisibleAsync();
-        //     await Assertions.Expect(IssuesHeader).ToBeVisibleAsync();
-        // }
         public async Task VerifyAtLeastOneResultAsync()
         {
             await Assertions.Expect(FirstSystemRow).ToBeVisibleAsync(new() { Timeout = 25000 });

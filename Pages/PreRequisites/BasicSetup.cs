@@ -74,21 +74,6 @@ namespace WiseUltimaTests.Pages.PreRequisites
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
 
-        /* ---------------- DASHBOARD COMMON ---------------- */
-
-        // protected ILocator CurrentTab =>Page.GetByRole(AriaRole.Button, new() { Name = "Current" });
-        // protected ILocator WPredictTab =>Page.GetByRole(AriaRole.Button, new() { Name = "W-Predict" });
-        // protected ILocator MPredictTab =>Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" });
-
-        // protected ILocator RegionDropdown =>Page.GetByText("Region", new() { Exact = false });
-        // protected ILocator ApplicationDropdown =>Page.GetByText("Application", new() { Exact = false }).First;
-        // private ILocator ServerCard => Page.GetByText("Server", new() { Exact = true }).First;
-        // private ILocator StorageCard => Page.GetByText("Storage", new() { Exact = true });
-        // private ILocator DatabaseCard => Page.GetByText("Database", new() { Exact = true });
-        // private ILocator NetworkCard => Page.GetByText("Network", new() { Exact = true });
-        // private ILocator MiddlewareCard => Page.GetByText("Middleware", new() { Exact = true });
-        // private ILocator BackupCard => Page.GetByText("Backup", new() { Exact = true });
-
         // ---------------- DASHBOARD COMMON FLOW ----------------
 
         protected ILocator CurrentTab =>
@@ -138,12 +123,6 @@ namespace WiseUltimaTests.Pages.PreRequisites
             await WaitForDashboardStableAsync();
         }
 
-        public async Task SelectRandomCriticalApplicationAsync()
-        {
-            await ApplicationOptions.ClickAsync();
-
-            
-        }
         public async Task ClickRandomCriticalAppAsync()
         {
             await ApplicationOptions.ClickAsync();
@@ -162,19 +141,6 @@ namespace WiseUltimaTests.Pages.PreRequisites
                 .ToBeVisibleAsync(new() { Timeout = 20000 });
         }
 
-        // public async Task VerifyDashboardTabsAsync()
-        // {
-        //     await Assertions.Expect(CurrentTab).ToBeVisibleAsync();
-        //     await Assertions.Expect(WPredictTab).ToBeVisibleAsync();
-        //     await Assertions.Expect(MPredictTab).ToBeVisibleAsync();
-        // }
-
-        // public async Task VerifyDashboardFiltersAsync()
-        // {
-        //     await Assertions.Expect(RegionDropdown).ToBeVisibleAsync();
-        //     await Assertions.Expect(ApplicationDropdown).ToBeVisibleAsync();
-        // }
-
         public async Task WaitForWiseCardsToLoadAsync()
         {
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
@@ -190,11 +156,6 @@ namespace WiseUltimaTests.Pages.PreRequisites
         public async Task VerifyWiseCardsAsync()
         {
             await Assertions.Expect(ServerCard).ToBeVisibleAsync();
-            // await Assertions.Expect(StorageCard).ToBeVisibleAsync();
-            // await Assertions.Expect(DatabaseCard).ToBeVisibleAsync();
-            // await Assertions.Expect(NetworkCard).ToBeVisibleAsync();
-            // await Assertions.Expect(MiddlewareCard).ToBeVisibleAsync();
-            // await Assertions.Expect(BackupCard).ToBeVisibleAsync();
         }
 
         public async Task WaitForPageAsync(int seconds)
