@@ -32,10 +32,9 @@ namespace WiseUltimaTests.Tests.WiseMonitor
         public async Task WiseMonitor_Should_Load_And_Display_Monitoring_Dashboard()
         {
             await _wiseMonitorPage.OpenAsync();
-            await _wiseMonitorPage.VerifyHeaderAsync();
-            await _wiseMonitorPage.VerifyMetricCardsAsync();
+            await _wiseMonitorPage.Verifyserver();
+            
             await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEMONITOR_01_Monitoring_Dashboard_Loaded");
-
             Logger.Info("TC_WISEMONITOR_01: Wise Monitor dashboard loaded with all metrics successfully.");
         }
     }

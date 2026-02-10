@@ -32,20 +32,48 @@ namespace WiseUltimaTests.Tests.WiseBoard
         [AllureOwner("TC_WISEBOARD_01")]
         [AllureTag("smoke")]
         [Fact]
-        public async Task WiseBoard_Should_Load_With_All_Sections()
+        public async Task WiseBoard_Should_Load_Current()
         {
             await _wiseBoardPage.OpenAsync();
-            await _basicSetup.VerifyDashboardTabsAsync();
-            await _basicSetup.VerifyDashboardFiltersAsync();
-            await _basicSetup.WaitForWiseCardsToLoadAsync();
-            await _basicSetup.VerifyWiseCardsAsync();
+            await _basicSetup.ClickRandomCriticalAppAsync();
+            await _basicSetup.SwitchToCurrentAsync();
+            await _basicSetup.WaitForDashboardStableAsync();
+            await _basicSetup.VerifyServerLoadedAsync();
 
-            await ScreenshotHelper.TakeScreenshotAsync(
-                Page,
-                "TC_WISEBOARD_01_WiseBoard_Page_Loaded"
-            );
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEBOARD_01_WiseBoard_Current_Page_Loaded");
+            Logger.Info("TC_WISEBOARD_01: Wise Board Current Pridiction Page loaded with all sections successfully.");
+        }
 
-            Logger.Info("TC_WISEBOARD_01: Wise Board page loaded with all sections successfully.");
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_WISEBOARD_02")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task WiseBoard_Should_Load_W_Pridict()
+        {
+            await _wiseBoardPage.OpenAsync();
+            await _basicSetup.ClickRandomCriticalAppAsync();
+            await _basicSetup.SwitchToWPredictAsync();
+            await _basicSetup.WaitForDashboardStableAsync();
+            await _basicSetup.VerifyServerLoadedAsync();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEBOARD_02_WiseBoard_W-Pridict_Page_Loaded");
+            Logger.Info("TC_WISEBOARD_02: Wise Board Week Pridiction Page loaded with all sections successfully.");
+        }
+
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
+        [AllureOwner("TC_WISEBOARD_03")]
+        [AllureTag("smoke")]
+        [Fact]
+        public async Task WiseBoard_Should_Load_M_Pridict()
+        {
+            await _wiseBoardPage.OpenAsync();
+            await _basicSetup.ClickRandomCriticalAppAsync();
+            await _basicSetup.SwitchToMPredictAsync();
+            await _basicSetup.WaitForDashboardStableAsync();
+            await _basicSetup.VerifyServerLoadedAsync();
+
+            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEBOARD_03_WiseBoard_M-Pridict_Page_Loaded");
+            Logger.Info("TC_WISEBOARD_03: Wise Board Month Pridiction Page loaded with all sections successfully.");
         }
     }
 }

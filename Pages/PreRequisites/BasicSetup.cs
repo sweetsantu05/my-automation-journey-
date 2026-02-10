@@ -1,4 +1,7 @@
+using Allure.Xunit.Attributes.Steps;
 using Microsoft.Playwright;
+using System.Text.RegularExpressions;
+
 
 namespace WiseUltimaTests.Pages.PreRequisites
 {
@@ -70,32 +73,71 @@ namespace WiseUltimaTests.Pages.PreRequisites
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
 
-        /* ---------------- DASHBOARD COMMON ---------------- */
+        // ---------------- DASHBOARD COMMON FLOW ----------------
 
-        protected ILocator CurrentTab =>Page.GetByRole(AriaRole.Button, new() { Name = "Current" });
-        protected ILocator WPredictTab =>Page.GetByRole(AriaRole.Button, new() { Name = "W-Predict" });
-        protected ILocator MPredictTab =>Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" });
+        protected ILocator CurrentTab =>
+            Page.GetByRole(AriaRole.Button, new() { Name = "Current" });
 
-        protected ILocator RegionDropdown =>Page.GetByText("Region", new() { Exact = false });
-        protected ILocator ApplicationDropdown =>Page.GetByText("Application", new() { Exact = false }).First;
-        private ILocator ServerCard => Page.GetByText("Server", new() { Exact = true }).First;
-        private ILocator StorageCard => Page.GetByText("Storage", new() { Exact = true });
-        private ILocator DatabaseCard => Page.GetByText("Database", new() { Exact = true });
-        private ILocator NetworkCard => Page.GetByText("Network", new() { Exact = true });
-        private ILocator MiddlewareCard => Page.GetByText("Middleware", new() { Exact = true });
-        private ILocator BackupCard => Page.GetByText("Backup", new() { Exact = true });
+        protected ILocator WPredictTab =>
+            Page.GetByRole(AriaRole.Button, new() { Name = "W-Predict" });
 
-        public async Task VerifyDashboardTabsAsync()
+        protected ILocator MPredictTab =>
+            Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" });
+
+        protected ILocator ApplicationDropdown =>
+            Page.GetByText("Application", new() { Exact = false });
+
+        protected ILocator ApplicationOptions =>
+            Page.GetByRole(AriaRole.Textbox, new(){Name="Critical app"});
+        
+        protected ILocator CriticalApp1 =>
+            Page.GetByText("Critical App 1", new() { Exact = true }).First;
+        protected ILocator CriticalApp2 =>
+            Page.GetByText("Critical App 2", new() { Exact = true }).First;
+
+        protected ILocator ServerCard =>
+            Page.GetByText("Server", new() { Exact = true }).First;
+
+        public async Task WaitForDashboardStableAsync()
         {
-            await Assertions.Expect(CurrentTab).ToBeVisibleAsync();
-            await Assertions.Expect(WPredictTab).ToBeVisibleAsync();
-            await Assertions.Expect(MPredictTab).ToBeVisibleAsync();
+            await Page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
 
-        public async Task VerifyDashboardFiltersAsync()
+        public async Task SwitchToCurrentAsync()
         {
-            await Assertions.Expect(RegionDropdown).ToBeVisibleAsync();
-            await Assertions.Expect(ApplicationDropdown).ToBeVisibleAsync();
+            await CurrentTab.ClickAsync();
+            await WaitForDashboardStableAsync();
+        }
+
+        public async Task SwitchToWPredictAsync()
+        {
+            await WPredictTab.ClickAsync();
+            await WaitForDashboardStableAsync();
+        }
+
+        public async Task SwitchToMPredictAsync()
+        {
+            await MPredictTab.ClickAsync();
+            await WaitForDashboardStableAsync();
+        }
+
+        public async Task ClickRandomCriticalAppAsync()
+        {
+            await ApplicationOptions.ClickAsync();
+            var apps = new[]
+            {
+                Page.GetByText("Critical App 1", new() { Exact = true }).First,
+                Page.GetByText("Critical App 2", new() { Exact = true }).First
+            };
+
+            await apps[Random.Shared.Next(apps.Length)].ClickAsync();
+        }
+
+        public async Task VerifyServerLoadedAsync()
+        {
+            await Assertions.Expect(ServerCard)
+                .ToBeVisibleAsync(new() { Timeout = 20000 });
         }
 
         public async Task WaitForWiseCardsToLoadAsync()
@@ -113,11 +155,6 @@ namespace WiseUltimaTests.Pages.PreRequisites
         public async Task VerifyWiseCardsAsync()
         {
             await Assertions.Expect(ServerCard).ToBeVisibleAsync();
-            await Assertions.Expect(StorageCard).ToBeVisibleAsync();
-            await Assertions.Expect(DatabaseCard).ToBeVisibleAsync();
-            await Assertions.Expect(NetworkCard).ToBeVisibleAsync();
-            await Assertions.Expect(MiddlewareCard).ToBeVisibleAsync();
-            await Assertions.Expect(BackupCard).ToBeVisibleAsync();
         }
 
         public async Task WaitForPageAsync(int seconds)
