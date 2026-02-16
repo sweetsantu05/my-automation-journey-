@@ -1,6 +1,6 @@
 using Microsoft.Playwright;
 using WiseUltimaTests.Pages.PreRequisites;
-
+using WiseUltimaTests.Utils;
 
 namespace WiseUltimaTests.Pages.Login
 {
@@ -58,10 +58,12 @@ namespace WiseUltimaTests.Pages.Login
 
         public async Task ValidateValidLogin()
         {
+            await Task.Delay(5000);
             var user =
                 WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.LoginAsync(user.Username, user.Password);
+            await ScreenshotHelper.TakeScreenshotAsync(_page, "after_login_attempt");
         }
 
         public async Task ValidateSuperAdminAccount(IPage page)

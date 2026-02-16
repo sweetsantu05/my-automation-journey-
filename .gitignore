@@ -31,3 +31,5 @@ Logs/
 # OS junk
 Thumbs.db
 .DS_Store
+
+.vs
