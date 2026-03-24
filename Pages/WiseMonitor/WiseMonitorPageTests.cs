@@ -25,17 +25,19 @@ namespace WiseUltimaTests.Tests.WiseMonitor
             await _loginPage.ValidateValidLogin();
         }
 
-        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
-        [AllureOwner("TC_WISEMONITOR_01")]
-        [AllureTag("smoke")]
         [Fact]
-        public async Task WiseMonitor_Should_Load_And_Display_Monitoring_Dashboard()
+        [Trait("Category", "Smoke")]
+        [AllureOwner("TC_001_WiseMonitor_Should_Load_And_Display_Monitoring_Dashboard")]
+        [AllureTag("Smoke")]
+        public async Task TC_001_WiseMonitor_Should_Load_And_Display_Monitoring_Dashboard()
         {
-            await _wiseMonitorPage.OpenAsync();
-            await _wiseMonitorPage.Verifyserver();
-            
-            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEMONITOR_01_Monitoring_Dashboard_Loaded");
-            Logger.Info("TC_WISEMONITOR_01: Wise Monitor dashboard loaded with all metrics successfully.");
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseMonitorPage.OpenAsync();
+                await _wiseMonitorPage.Verifyserver();
+                
+                Logger.Info("TC_WISEMONITOR_01: Wise Monitor dashboard loaded with all metrics successfully.");
+            }, nameof(TC_001_WiseMonitor_Should_Load_And_Display_Monitoring_Dashboard));
         }
     }
 }

@@ -63,7 +63,6 @@ namespace WiseUltimaTests.Pages.Login
                 WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
 
             await _basicSetup.LoginAsync(user.Username, user.Password);
-            await ScreenshotHelper.TakeScreenshotAsync(_page, "after_login_attempt");
         }
 
         public async Task ValidateSuperAdminAccount(IPage page)
