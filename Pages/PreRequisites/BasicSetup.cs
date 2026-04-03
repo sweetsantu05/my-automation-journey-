@@ -1,5 +1,7 @@
 ﻿using Allure.Xunit.Attributes.Steps;
 using Microsoft.Playwright;
+using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 
 
@@ -18,22 +20,7 @@ namespace WiseUltimaTests.Pages.PreRequisites
         {
             await Page.GetByPlaceholder("Enter your email").FillAsync(username);
             await Page.GetByPlaceholder("Enter your password").FillAsync(password);
-
-            await Page.GetByRole(
-                    AriaRole.Button,
-                    new() { Name = "Sign In" }
-                )
-                .ClickAsync();
-        }
-
-        public async Task LoginIfNeededAsync(string username, string password)
-        {
-            var emailField = Page.GetByPlaceholder("Enter your email");
-
-            if (await emailField.IsVisibleAsync())
-            {
-                await LoginAsync(username, password);
-            }
+            await Page.GetByRole(AriaRole.Button,new() { Name = "Sign In" }).ClickAsync();        
         }
 
         public async Task SignUpAsync(
@@ -76,9 +63,6 @@ namespace WiseUltimaTests.Pages.PreRequisites
 
         protected ILocator MPredictTab =>
             Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" });
-
-        protected ILocator ApplicationDropdown =>
-            Page.GetByText("Application", new() { Exact = false });
 
         protected ILocator ApplicationOptions =>
             Page.GetByText("Critical App");
@@ -129,26 +113,30 @@ namespace WiseUltimaTests.Pages.PreRequisites
                 .ToBeVisibleAsync(new() { Timeout = 20000 });
         }
 
-        public async Task WaitForWiseCardsToLoadAsync()
-        {
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        // public async Task WaitForWiseCardsToLoadAsync()
+        // {
+        //     await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-            await Page.GetByText("Server", new() { Exact = true })
-                .First
-                .WaitForAsync(new LocatorWaitForOptions
-                {
-                    Timeout = 40000
-                });
-        }
+        //     await Page.GetByText("Server", new() { Exact = true })
+        //         .First
+        //         .WaitForAsync(new LocatorWaitForOptions
+        //         {
+        //             Timeout = 40000
+        //         });
+        // }
 
-        public async Task VerifyWiseCardsAsync()
-        {
-            await Assertions.Expect(ServerCard).ToBeVisibleAsync();
-        }
+        // public async Task VerifyWiseCardsAsync()
+        // {
+        //     await Assertions.Expect(ServerCard).ToBeVisibleAsync();
+        // }
 
         public async Task WaitForPageAsync(int seconds)
         {
             await Task.Delay(seconds * 1000);
+        }
+        public async Task NavMenuToggleButton()
+        {
+            await Page.Locator(".mud-navmenu > div:nth-child(2)").ClickAsync();
         }
     }
 }

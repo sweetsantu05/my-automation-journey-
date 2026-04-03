@@ -28,6 +28,8 @@ namespace WiseUltimaTests.Tests.WiseExplore
             await _loginPage.NavigateToLoginPageAsync();
             await _loginPage.ValidateValidLogin();
             await _basicSetup.WaitForDashboardStableAsync();
+            await _wiseExplorePage.OpenAsync();
+            await _basicSetup.ClickRandomCriticalAppAsync();
         }
 
         [Fact]
@@ -38,8 +40,7 @@ namespace WiseUltimaTests.Tests.WiseExplore
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _wiseExplorePage.OpenAsync();
-                await _basicSetup.ClickRandomCriticalAppAsync();
+                
                 await _basicSetup.SwitchToCurrentAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseExplorePage.VerifyAtLeastOneResultAsync();
@@ -56,8 +57,8 @@ namespace WiseUltimaTests.Tests.WiseExplore
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _wiseExplorePage.OpenAsync();
-                await _basicSetup.ClickRandomCriticalAppAsync();
+                // await _wiseExplorePage.OpenAsync();
+                // await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseExplorePage.VerifyAtLeastOneResultAsync();
@@ -74,8 +75,8 @@ namespace WiseUltimaTests.Tests.WiseExplore
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _wiseExplorePage.OpenAsync();
-                await _basicSetup.ClickRandomCriticalAppAsync();
+                // await _wiseExplorePage.OpenAsync();
+                // await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseExplorePage.VerifyAtLeastOneResultAsync();

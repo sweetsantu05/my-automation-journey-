@@ -4,6 +4,7 @@ using WiseUltimaTests.TestHooks;
 using WiseUltimaTests.Utils;
 using Xunit;
 using Allure.Xunit.Attributes;
+using WiseUltimaTests.Pages.PreRequisites;
 
 namespace WiseUltimaTests.Tests.WiseAgents
 {
@@ -13,6 +14,7 @@ namespace WiseUltimaTests.Tests.WiseAgents
     {
         private LoginPage _loginPage = null!;
         private WiseAgentsPage _wiseAgentsPage = null!;
+        private BasicSetup _basicsetup = null!;
 
         public new async Task InitializeAsync()
         {
@@ -20,6 +22,7 @@ namespace WiseUltimaTests.Tests.WiseAgents
 
             _loginPage = new LoginPage(Page);
             _wiseAgentsPage = new WiseAgentsPage(Page);
+            _basicsetup = new BasicSetup(Page);
 
             await _loginPage.NavigateToLoginPageAsync();
             await _loginPage.ValidateValidLogin();

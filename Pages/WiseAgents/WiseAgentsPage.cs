@@ -6,11 +6,11 @@ namespace WiseUltimaTests.Pages.WiseAgents
 {
     public class WiseAgentsPage : BasicSetup
     {
+        // private BasicSetup _basicsetup = null!;
         public WiseAgentsPage(IPage page) : base(page) { }
 
         private ILocator WiseAgentsCard =>
-            Page.GetByText("Wise Agents", new() { Exact = true });
-
+            Page.GetByRole(AriaRole.Link, new() { Name = "Wise Agents" });
         private ILocator HealthMonitorCard =>
             Page.GetByText("Health Monitor", new() { Exact = true });
 
@@ -32,17 +32,17 @@ namespace WiseUltimaTests.Pages.WiseAgents
         private ILocator BackupButlerCard =>
             Page.GetByText("Backup Butler", new() { Exact = true });
 
-        public async Task OpenAsync()
-        {
-            await WiseAgentsCard.ClickAsync();
-            await Assertions.Expect(Page)
-                .ToHaveURLAsync(new Regex(".*/wise-agents"));
-        }
+    public async Task OpenAsync()
+    {
+        await NavMenuToggleButton();
+        await WiseAgentsCard.ClickAsync();
+        await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-agents"));
+    }
 
-        public async Task VerifyWiseAgnet()
-        {
-            await Assertions.Expect(WiseAgentsCard).ToBeVisibleAsync();
-        
-        }
+    public async Task VerifyWiseAgnet()
+    {
+        await Assertions.Expect(WiseAgentsCard).ToBeVisibleAsync();
+    
+    }
     }
 }

@@ -7,17 +7,15 @@ namespace WiseUltimaTests.Pages.WiseMonitor
     public class WiseMonitorPage : BasicSetup
     {
         public WiseMonitorPage(IPage page) : base(page) { }
+        private ILocator WiseMonitoryCard =>
+            Page.GetByRole(AriaRole.Link, new() { Name = "Wise Monitory" });
 
-        private ILocator NavMenuToggle =>Page.Locator(".mud-navmenu > div:nth-child(2)");
-
-        private ILocator WiseMonitoryNavItem =>
-            Page.Locator(".mud-navmenu").GetByText("Wise Monitory", new() { Exact = true });
         protected ILocator HostChip =>Page.GetByText("Host: wisemaestro-rdb-server", new() { Exact = false });
 
         public async Task OpenAsync()
         {
-            await NavMenuToggle.ClickAsync();
-            await WiseMonitoryNavItem.ClickAsync();
+            await NavMenuToggleButton();
+            await WiseMonitoryCard.ClickAsync();
             await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-monitory"));
             await WaitForDashboardStableAsync();
         }

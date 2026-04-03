@@ -18,7 +18,6 @@ namespace WiseUltimaTests.Tests.Login
         {
             await base.InitializeAsync();
             _attachmentHelper = new AttachmentHelper(Context);
-            // await base.InitializeAsync();
             _setup = new BasicSetup(Page);
             _loginPage = new LoginPage(Page);
 

@@ -15,7 +15,7 @@ namespace WiseUltimaTests.Pages.Login
             _basicSetup = new BasicSetup(page);
         }
 
-        public async Task NavigateToLoginPageAsync()
+        public async Task  NavigateToLoginPageAsync()
         {
             await _page.GotoAsync(
                 WiseUltimaTests.Utils.ConfigReader.Get("LoginPageUrl"),
@@ -34,54 +34,40 @@ namespace WiseUltimaTests.Pages.Login
 
         public async Task ValidateEmptyUserName()
         {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_username");
-
+            var user =WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_username");
             await _basicSetup.LoginAsync(user.Username, user.Password);
         }
 
         public async Task ValidateEmptyPassword()
         {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_password");
-
+            var user = WiseUltimaTests.Utils.ConfigReader.GetCredential("empty_password");
             await _basicSetup.LoginAsync(user.Username, user.Password);
         }
 
         public async Task ValidateInvalidLogin()
         {
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("invalid");
-
+            var user = WiseUltimaTests.Utils.ConfigReader.GetCredential("invalid");
             await _basicSetup.LoginAsync(user.Username, user.Password);
         }
 
         public async Task ValidateValidLogin()
         {
-            await Task.Delay(5000);
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
-
+            // await Task.Delay(5000);
+            var user= WiseUltimaTests.Utils.ConfigReader.GetCredential("standard_user");
             await _basicSetup.LoginAsync(user.Username, user.Password);
         }
 
         public async Task ValidateSuperAdminAccount(IPage page)
         {
             await NavigateToLoginPageAsync();
-
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("superadmin");
-
+            var user = WiseUltimaTests.Utils.ConfigReader.GetCredential("superadmin");
             await _basicSetup.LoginAsync(user.Username, user.Password);
         }
 
         public async Task ValidateUltimaAdminAccount(IPage page)
         {
             await NavigateToLoginPageAsync();
-
-            var user =
-                WiseUltimaTests.Utils.ConfigReader.GetCredential("ultimaadmin");
-
+            var user =WiseUltimaTests.Utils.ConfigReader.GetCredential("ultimaadmin");
             await _basicSetup.LoginAsync(user.Username, user.Password);
         }
     }

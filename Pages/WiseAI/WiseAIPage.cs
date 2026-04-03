@@ -9,8 +9,7 @@ namespace WiseUltimaTests.Pages.WiseAI
         public WiseAIPage(IPage page) : base(page) { }
 
         private ILocator WiseAICard =>
-            Page.GetByText("Wise AI", new() { Exact = true });
-
+            Page.GetByRole(AriaRole.Link, new() { Name = "Wise AI" });
         private ILocator App1Tab =>
             Page.GetByRole(AriaRole.Button, new() { Name = "App 1" });
 
@@ -40,19 +39,9 @@ namespace WiseUltimaTests.Pages.WiseAI
 
         public async Task OpenAsync()
         {
+            await NavMenuToggleButton();
             await WiseAICard.ClickAsync();
             await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-ai"));
-        }
-
-        public async Task VerifyAppTabsAsync()
-        {
-            await Assertions.Expect(App1Tab).ToBeVisibleAsync();
-            await Assertions.Expect(App2Tab).ToBeVisibleAsync();
-        }
-
-        public async Task VerifySearchAsync()
-        {
-            await Assertions.Expect(SearchButton).ToBeVisibleAsync();
         }
 
         public async Task VerifyPopularQueriesAsync()
@@ -97,7 +86,7 @@ namespace WiseUltimaTests.Pages.WiseAI
             }
             catch (PlaywrightException)
             {
-                throw new Xunit.Sdk.XunitException("AI is taking more than the average response time (Avg time: 20 seconds).");
+                throw new Xunit.Sdk.XunitException("AI is taking more than the average response time (Avg time: 30 seconds).");
             }
 
             var aiText = await AiMessageBubble.InnerTextAsync();
