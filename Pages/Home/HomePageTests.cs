@@ -460,7 +460,7 @@ namespace WiseUltimaTests.Tests.Home
 
                 var (start, end) = await _homePage.SelectLast7DaysRangeAsync();
 
-                //await _homePage.VerifyDateRangeAsync(start, end);
+                // await _homePage.VerifyDateRangeAsync(start, end);
 
                 Logger.Info($"Date filter applied from {start} to {end}");
 
@@ -519,4 +519,4 @@ namespace WiseUltimaTests.Tests.Home
             }, nameof(TC_024_Clear_Date_Filter));
         }
     }
-}
+}                  
