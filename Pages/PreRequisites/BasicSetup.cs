@@ -96,7 +96,7 @@ namespace WiseUltimaTests.Pages.PreRequisites
 
         public async Task ClickRandomCriticalAppAsync()
         {
-            await Task.Delay(20000);
+            await Task.Delay(10000);
             await ApplicationOptions.ClickAsync();
             var apps = new[]
             {

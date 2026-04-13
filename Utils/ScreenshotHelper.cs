@@ -51,7 +51,7 @@ namespace WiseUltimaTests.Utils
                     catch (IOException) { } // Ignore if file is locked
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
             }
             

@@ -5,6 +5,7 @@ using WiseUltimaTests.TestHooks;
 using WiseUltimaTests.Utils;
 using Xunit;
 using Allure.Xunit.Attributes;
+using WiseUltimaTests.Pages.WiseBoard;
 
 namespace WiseUltimaTests.Tests.WiseBoard
 {
@@ -26,6 +27,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
 
             await _loginPage.NavigateToLoginPageAsync();
             await _loginPage.ValidateValidLogin();
+            await _wiseBoardPage.OpenAsync();
         }
 
         [Fact]
@@ -36,12 +38,10 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _wiseBoardPage.OpenAsync();
                 await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _basicSetup.VerifyServerLoadedAsync();
-
                 Logger.Info("TC_WISEBOARD_01: Wise Board Current Pridiction Page loaded with all sections successfully.");
             }, nameof(TC_001_WiseBoard_Should_Load_Current));
         }
@@ -54,12 +54,10 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _wiseBoardPage.OpenAsync();
                 await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _basicSetup.VerifyServerLoadedAsync();
-
                 Logger.Info("TC_WISEBOARD_02: Wise Board Week Pridiction Page loaded with all sections successfully.");
             }, nameof(TC_002_WiseBoard_Should_Load_W_Pridict));
         }
@@ -72,14 +70,348 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _wiseBoardPage.OpenAsync();
                 await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _basicSetup.VerifyServerLoadedAsync();
-
                 Logger.Info("TC_WISEBOARD_03: Wise Board Month Pridiction Page loaded with all sections successfully.");
             }, nameof(TC_003_WiseBoard_Should_Load_M_Pridict));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_004_Verify_Current_Server_Status_Green")]
+        [AllureTag("Regression")]
+        public async Task TC_004_Verify_Current_Server_Status_Green()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToCurrentAsync();
+                await _wiseBoardPage.ValidateStatusAsync(StatusType.Green);
+            }, nameof(TC_004_Verify_Current_Server_Status_Green));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_005_Verify_Current_Server_Status_Amber")]
+        [AllureTag("Regression")]
+        public async Task TC_005_Verify_Current_Server_Status_Amber()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToCurrentAsync();
+                await _wiseBoardPage.ValidateStatusAsync(StatusType.Amber);
+            }, nameof(TC_005_Verify_Current_Server_Status_Amber));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_006_Verify_Current_Server_Status_Red")]
+        [AllureTag("Regression")]
+        public async Task TC_006_Verify_Current_Server_Status_Red()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToCurrentAsync();
+                await _wiseBoardPage.ValidateStatusAsync(StatusType.Red);
+            }, nameof(TC_006_Verify_Current_Server_Status_Red));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_007_Verify_W_Predict_Server_Status_Green")]
+        [AllureTag("Regression")]
+        public async Task TC_007_Verify_W_Predict_Server_Status_Green()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToWPredictAsync();
+                await _wiseBoardPage.ValidateStatusAsync(StatusType.Green);
+            }, nameof(TC_007_Verify_W_Predict_Server_Status_Green));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_008_Verify_W_Predict_Server_Status_Amber")]
+        [AllureTag("Regression")]
+        public async Task TC_008_Verify_W_Predict_Server_Status_Amber()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToWPredictAsync();
+                await _wiseBoardPage.ValidateStatusAsync(StatusType.Amber);
+            }, nameof(TC_008_Verify_W_Predict_Server_Status_Amber));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_009_Verify_W_Predict_Server_Status_Red")]
+        [AllureTag("Regression")]
+        public async Task TC_009_Verify_W_Predict_Server_Status_Red()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToWPredictAsync();
+                await _wiseBoardPage.ValidateStatusAsync(StatusType.Red);
+            }, nameof(TC_009_Verify_W_Predict_Server_Status_Red));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_010_Verify_M_Predict_Server_Status_Green")]
+        [AllureTag("Regression")]
+        public async Task TC_010_Verify_M_Predict_Server_Status_Green()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToMPredictAsync();
+                await _wiseBoardPage.ValidateStatusAsync(StatusType.Green);
+            }, nameof(TC_010_Verify_M_Predict_Server_Status_Green));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_011_Verify_M_Predict_Server_Status_Amber")]
+        [AllureTag("Regression")]
+        public async Task TC_011_Verify_M_Predict_Server_Status_Amber()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToMPredictAsync();
+                await _wiseBoardPage.ValidateStatusAsync(StatusType.Amber);
+            }, nameof(TC_011_Verify_M_Predict_Server_Status_Amber));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_012_Verify_M_Predict_Server_Status_Red")]
+        [AllureTag("Regression")]
+        public async Task TC_012_Verify_M_Predict_Server_Status_Red()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToMPredictAsync();
+                await _wiseBoardPage.ValidateStatusAsync(StatusType.Red);
+            }, nameof(TC_012_Verify_M_Predict_Server_Status_Red));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_013_Verify_Current_Storage_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_013_Verify_Current_Storage_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToCurrentAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Storage);
+            }, nameof(TC_013_Verify_Current_Storage_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_014_Verify_W_Predict_Storage_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_014_Verify_W_Predict_Storage_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToWPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Storage);
+            }, nameof(TC_014_Verify_W_Predict_Storage_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_015_Verify_M_Predict_Storage_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_015_Verify_M_Predict_Storage_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToMPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Storage);
+            }, nameof(TC_015_Verify_M_Predict_Storage_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_016_Verify_Current_Database_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_016_Verify_Current_Database_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToCurrentAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Database);
+            }, nameof(TC_016_Verify_Current_Database_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_017_Verify_W_Predict_Database_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_017_Verify_W_Predict_Database_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToWPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Database);
+            }, nameof(TC_017_Verify_W_Predict_Database_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_018_Verify_M_Predict_Database_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_018_Verify_M_Predict_Database_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToMPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Database);
+            }, nameof(TC_018_Verify_M_Predict_Database_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_019_Verify_Current_Network_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_019_Verify_Current_Network_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToCurrentAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Network);
+            }, nameof(TC_019_Verify_Current_Network_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_020_Verify_W_Predict_Network_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_020_Verify_W_Predict_Network_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToWPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Network);
+            }, nameof(TC_020_Verify_W_Predict_Network_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_021_Verify_M_Predict_Network_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_021_Verify_M_Predict_Network_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToMPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Network);
+            }, nameof(TC_021_Verify_M_Predict_Network_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_022_Verify_Current_Middleware_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_022_Verify_Current_Middleware_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToCurrentAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Middleware);
+            }, nameof(TC_022_Verify_Current_Middleware_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_023_Verify_W_Predict_Middleware_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_023_Verify_W_Predict_Middleware_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToWPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Middleware);
+            }, nameof(TC_023_Verify_W_Predict_Middleware_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_024_Verify_M_Predict_Middleware_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_024_Verify_M_Predict_Middleware_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToMPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Middleware);
+            }, nameof(TC_024_Verify_M_Predict_Middleware_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_025_Verify_Current_Backup_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_025_Verify_Current_Backup_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToCurrentAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Backup);
+            }, nameof(TC_025_Verify_Current_Backup_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_026_Verify_W_Predict_Backup_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_026_Verify_W_Predict_Backup_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToWPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Backup);
+            }, nameof(TC_026_Verify_W_Predict_Backup_All_Status));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_027_Verify_M_Predict_Backup_All_Status")]
+        [AllureTag("Regression")]
+        public async Task TC_027_Verify_M_Predict_Backup_All_Status()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.ClickRandomCriticalAppAsync();
+                await _basicSetup.SwitchToMPredictAsync();
+                await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Backup);
+            }, nameof(TC_027_Verify_M_Predict_Backup_All_Status));
         }
     }
 }
