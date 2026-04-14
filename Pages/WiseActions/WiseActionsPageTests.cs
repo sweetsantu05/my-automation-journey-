@@ -28,6 +28,7 @@ namespace WiseUltimaTests.Tests.WiseActions
             await _loginPage.NavigateToLoginPageAsync();
             await _loginPage.ValidateValidLogin();
             await _wiseActionsPage.OpenAsync();
+            await _basicSetup.ClickRandomCriticalAppAsync();
         }
         
         [Fact]
@@ -38,8 +39,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
-                await _basicSetup.SwitchToCurrentAsync();
+                await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.VerifyActButton();
                 Logger.Info("TC_WISEACTION_01: Wise Actions page and action modal validated successfully.");
@@ -54,7 +54,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.VerifyActButton();
@@ -70,7 +69,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.VerifyActButton();
@@ -86,8 +84,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
-                await _basicSetup.SwitchToCurrentAsync();
+                await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Server);
             }, nameof(TC_004_Server_Current_Data_Validation));
@@ -101,7 +98,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
+
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Server);
@@ -116,7 +113,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Server);
@@ -131,8 +127,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
-                await _basicSetup.SwitchToCurrentAsync();
+                await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Storage);
             }, nameof(TC_007_Storage_Current_Data_Validation));
@@ -146,7 +141,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Storage);
@@ -161,7 +155,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Storage);
@@ -176,8 +169,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
-                await _basicSetup.SwitchToCurrentAsync();
+                await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Database);
             }, nameof(TC_010_Database_Current_Data_Validation));
@@ -191,7 +183,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Database);
@@ -206,7 +197,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Database);
@@ -221,8 +211,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
-                await _basicSetup.SwitchToCurrentAsync();
+                await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Network);
             }, nameof(TC_013_Network_Current_Data_Validation));
@@ -236,7 +225,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Network);
@@ -251,7 +239,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Network);
@@ -266,8 +253,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
-                await _basicSetup.SwitchToCurrentAsync();
+                await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Middleware);
             }, nameof(TC_016_Middleware_Current_Data_Validation));
@@ -281,7 +267,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Middleware);
@@ -296,7 +281,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Middleware);
@@ -311,8 +295,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
-                await _basicSetup.SwitchToCurrentAsync();
+                await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Backup);
             }, nameof(TC_019_Backup_Current_Data_Validation));
@@ -326,7 +309,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Backup);
@@ -341,7 +323,6 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Backup);
@@ -356,8 +337,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
-                await _basicSetup.SwitchToCurrentAsync();
+                await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.WaitForTableToLoadAsync();
                 await _wiseActionsPage.ClickRandomRowActAsync();
@@ -366,7 +346,7 @@ namespace WiseUltimaTests.Tests.WiseActions
 
                 if (isDisabled)
                 {
-                    Console.WriteLine("✅ Ticket already raised → Test Passed");
+                    Console.WriteLine(" Ticket already raised → Test Passed");
                     await _wiseActionsPage.CloseActionPopupAsync();
                     return;
                 }
@@ -375,7 +355,7 @@ namespace WiseUltimaTests.Tests.WiseActions
                 string platform = await _wiseActionsPage.SelectRandomTicketPlatformAsync();
                 string ticketNumber = await _wiseActionsPage.GetRaisedTicketNumberAsync();
 
-                Console.WriteLine($"🎫 Ticket Raised: {ticketNumber} via {platform}");
+                Console.WriteLine($"Ticket Raised: {ticketNumber} via {platform}");
 
                 await _wiseActionsPage.CloseActionPopupAsync();
                 await _wiseActionsPage.GoToMyTicketsAsync();

@@ -38,7 +38,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _basicSetup.VerifyServerLoadedAsync();
@@ -54,7 +53,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _basicSetup.VerifyServerLoadedAsync();
@@ -70,7 +68,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _basicSetup.VerifyServerLoadedAsync();
@@ -86,7 +83,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Green);
             }, nameof(TC_004_Verify_Current_Server_Status_Green));
@@ -100,7 +96,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Amber);
             }, nameof(TC_005_Verify_Current_Server_Status_Amber));
@@ -114,7 +109,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Red);
             }, nameof(TC_006_Verify_Current_Server_Status_Red));
@@ -128,7 +122,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Green);
             }, nameof(TC_007_Verify_W_Predict_Server_Status_Green));
@@ -142,7 +135,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Amber);
             }, nameof(TC_008_Verify_W_Predict_Server_Status_Amber));
@@ -156,7 +148,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Red);
             }, nameof(TC_009_Verify_W_Predict_Server_Status_Red));
@@ -170,7 +161,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Green);
             }, nameof(TC_010_Verify_M_Predict_Server_Status_Green));
@@ -184,7 +174,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Amber);
             }, nameof(TC_011_Verify_M_Predict_Server_Status_Amber));
@@ -198,7 +187,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Red);
             }, nameof(TC_012_Verify_M_Predict_Server_Status_Red));
@@ -212,7 +200,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Storage);
             }, nameof(TC_013_Verify_Current_Storage_All_Status));
@@ -226,7 +213,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Storage);
             }, nameof(TC_014_Verify_W_Predict_Storage_All_Status));
@@ -240,7 +226,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Storage);
             }, nameof(TC_015_Verify_M_Predict_Storage_All_Status));
@@ -254,7 +239,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Database);
             }, nameof(TC_016_Verify_Current_Database_All_Status));
@@ -268,7 +252,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Database);
             }, nameof(TC_017_Verify_W_Predict_Database_All_Status));
@@ -282,7 +265,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Database);
             }, nameof(TC_018_Verify_M_Predict_Database_All_Status));
@@ -296,7 +278,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Network);
             }, nameof(TC_019_Verify_Current_Network_All_Status));
@@ -310,7 +291,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Network);
             }, nameof(TC_020_Verify_W_Predict_Network_All_Status));
@@ -324,7 +304,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Network);
             }, nameof(TC_021_Verify_M_Predict_Network_All_Status));
@@ -338,7 +317,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Middleware);
             }, nameof(TC_022_Verify_Current_Middleware_All_Status));
@@ -352,7 +330,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Middleware);
             }, nameof(TC_023_Verify_W_Predict_Middleware_All_Status));
@@ -366,7 +343,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Middleware);
             }, nameof(TC_024_Verify_M_Predict_Middleware_All_Status));
@@ -380,7 +356,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Backup);
             }, nameof(TC_025_Verify_Current_Backup_All_Status));
@@ -394,7 +369,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Backup);
             }, nameof(TC_026_Verify_W_Predict_Backup_All_Status));
@@ -408,7 +382,6 @@ namespace WiseUltimaTests.Tests.WiseBoard
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Backup);
             }, nameof(TC_027_Verify_M_Predict_Backup_All_Status));

@@ -35,8 +35,6 @@ namespace WiseUltimaTests.Pages.WiseActions
             await Assertions.Expect(ActButton).ToBeVisibleAsync(new() {Timeout=25000});
         }
 
-
-
         private ILocator GetCardSection(ActionCardType card)
         {
             return Page.Locator(".mud-card")
@@ -79,6 +77,22 @@ namespace WiseUltimaTests.Pages.WiseActions
             var (red, amber) = await GetRedAmberCountAsync(card);
 
             int expectedTotal = red + amber;
+
+            var healthyMessage = Page.Locator("text=All systems are healthy");
+
+            if (expectedTotal == 0)
+            {
+                if (await healthyMessage.IsVisibleAsync())
+                {
+                    Console.WriteLine($"[{card}] No issues → System healthy");
+                    Assert.True(true);
+                    return;
+                }
+                else
+                {
+                    throw new Exception($"[{card}]  Expected healthy state but not found");
+                }
+            }
 
             int actualTotal = await GetTotalTableCountAsync();
 

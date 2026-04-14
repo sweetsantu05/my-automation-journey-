@@ -57,8 +57,6 @@ namespace WiseUltimaTests.Tests.WiseExplore
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                // await _wiseExplorePage.OpenAsync();
-                // await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseExplorePage.VerifyAtLeastOneResultAsync();
@@ -75,8 +73,6 @@ namespace WiseUltimaTests.Tests.WiseExplore
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                // await _wiseExplorePage.OpenAsync();
-                // await _basicSetup.ClickRandomCriticalAppAsync();
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseExplorePage.VerifyAtLeastOneResultAsync();

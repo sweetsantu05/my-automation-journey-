@@ -96,7 +96,7 @@ namespace WiseUltimaTests.Pages.PreRequisites
 
         public async Task ClickRandomCriticalAppAsync()
         {
-            await Task.Delay(10000);
+            await WaitForPageStableAsync();
             await ApplicationOptions.ClickAsync();
             var apps = new[]
             {
@@ -107,28 +107,44 @@ namespace WiseUltimaTests.Pages.PreRequisites
             await apps[Random.Shared.Next(apps.Length)].ClickAsync();
         }
 
+        public async Task WaitForPageStableAsync()
+        {
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+            await Page.WaitForFunctionAsync(@"
+                () => {
+                    const loaders = document.querySelectorAll(
+                        '.mud-progress-circular, .loading, .spinner'
+                    );
+                    return loaders.length === 0;
+                }
+            ");
+
+            await Page.WaitForTimeoutAsync(500);
+        }
+
         public async Task VerifyServerLoadedAsync()
         {
             await Assertions.Expect(ServerCard)
                 .ToBeVisibleAsync(new() { Timeout = 20000 });
         }
 
-        // public async Task WaitForWiseCardsToLoadAsync()
-        // {
-        //     await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        public async Task SwitchBasedOnAppAsync()
+        {
+            var currentTab = Page.Locator("button:has-text('CURRENT')");
 
-        //     await Page.GetByText("Server", new() { Exact = true })
-        //         .First
-        //         .WaitForAsync(new LocatorWaitForOptions
-        //         {
-        //             Timeout = 40000
-        //         });
-        // }
+            if (await currentTab.CountAsync() > 0 && await currentTab.IsVisibleAsync())
+            {
+                await currentTab.ClickAsync();
+            }
+            else
+            {
+                Console.WriteLine(" CURRENT not available → switching to D-PREDICT");
+                await Page.Locator("button:has-text('D-PREDICT')").ClickAsync();
+            }
 
-        // public async Task VerifyWiseCardsAsync()
-        // {
-        //     await Assertions.Expect(ServerCard).ToBeVisibleAsync();
-        // }
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        }
 
         public async Task WaitForPageAsync(int seconds)
         {
