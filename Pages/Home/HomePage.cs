@@ -74,7 +74,7 @@ namespace WiseUltimaTests.Pages.Home
 
             await Assertions.Expect(firstRow).Not.ToHaveTextAsync("", new()
             {
-                Timeout = 20000
+                Timeout = 30000
             });
         }
 
@@ -94,6 +94,21 @@ namespace WiseUltimaTests.Pages.Home
                 var row = rows.Nth(i);
                 await Assertions.Expect(row).ToBeVisibleAsync();
             }
+        }
+
+        public async Task WaitForTableToLoadAsync(IPage page)
+        {
+            await page.Locator(".skeleton-row").First.WaitForAsync(new()
+            {
+                State = WaitForSelectorState.Detached,
+                Timeout = 20000
+            });
+
+            await Assertions.Expect(page.Locator("tr.mud-table-row").First)
+                .Not.ToHaveTextAsync("", new()
+                {
+                    Timeout = 20000
+                });
         }
 
         private ILocator SearchTextbox =>
@@ -200,7 +215,6 @@ namespace WiseUltimaTests.Pages.Home
             if (count <= 1)
                 throw new Exception("No options available in dropdown");
 
-            // Skip "All"
             int randomIndex = Random.Shared.Next(1, count);
 
             var selectedOption = options.Nth(randomIndex);

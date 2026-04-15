@@ -2,10 +2,13 @@ using Microsoft.Playwright;
 using WiseUltimaTests.Pages.Home;
 using WiseUltimaTests.Pages.Login;
 using WiseUltimaTests.Pages.PreRequisites;
+using System.Text.RegularExpressions;
+
 using WiseUltimaTests.TestHooks;
 using WiseUltimaTests.Utils;
 using Xunit;
 using Allure.Xunit.Attributes;
+
 
 namespace WiseUltimaTests.Tests.Home
 {
@@ -42,6 +45,7 @@ namespace WiseUltimaTests.Tests.Home
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _homePage.VerifyHomePageLoadedAsync();
+                await Assertions.Expect(Page.GetByText(new Regex(@"Welcome"))).ToBeVisibleAsync();
 
                 Logger.Info("TC_HOME_01: Home page loaded successfully.");
             }, nameof(TC_001_Verify_HomePage_Loaded));
@@ -56,6 +60,7 @@ namespace WiseUltimaTests.Tests.Home
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _homePage.ToggleDarkModeAsync();
+                await Assertions.Expect(Page.Locator("body")).ToHaveClassAsync(new Regex("dark"));
 
                 Logger.Info("TC_HOME_02: Dark mode toggled successfully.");
             }, nameof(TC_002_Toggle_Dark_Mode));

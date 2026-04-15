@@ -28,6 +28,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
             await _loginPage.NavigateToLoginPageAsync();
             await _loginPage.ValidateValidLogin();
             await _wiseBoardPage.OpenAsync();
+            await _basicSetup.ClickRandomCriticalAppAsync();
         }
 
         [Fact]

@@ -4,15 +4,6 @@ using System.Text.RegularExpressions;
 
 namespace WiseUltimaTests.Pages.WiseActions
 {
-    public enum ActionCardType
-{
-    Server,
-    Storage,
-    Database,
-    Network,
-    Middleware,
-    Backup
-}
     public class WiseActionsPage : BasicSetup
     {
         public WiseActionsPage(IPage page) : base(page) { }
@@ -240,5 +231,15 @@ namespace WiseUltimaTests.Pages.WiseActions
 
             return false;
         }
+    }
+
+    public enum ActionCardType
+    {
+        Server,
+        Storage,
+        Database,
+        Network,
+        Middleware,
+        Backup
     }
 }

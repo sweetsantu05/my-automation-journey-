@@ -2,6 +2,7 @@
 using Microsoft.Playwright;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
+
 using System.Text.RegularExpressions;
 
 
@@ -96,6 +97,7 @@ namespace WiseUltimaTests.Pages.PreRequisites
 
         public async Task ClickRandomCriticalAppAsync()
         {
+            await WaitForIconToLoadAsync(Page);
             await WaitForPageStableAsync();
             await ApplicationOptions.ClickAsync();
             var apps = new[]
@@ -105,6 +107,24 @@ namespace WiseUltimaTests.Pages.PreRequisites
             };
 
             await apps[Random.Shared.Next(apps.Length)].ClickAsync();
+        }
+       public async Task WaitForIconToLoadAsync(IPage page)
+        {
+            await page.WaitForFunctionAsync(@"
+                () => {
+                    const images = Array.from(document.images);
+
+                    const target = images.find(img => 
+                        img.src.includes('Backup.svg') || 
+                        img.src.includes('Backup.png')
+                    );
+
+                    return ta  rget && target.complete && target.naturalWidth > 0;
+                }
+            ", new PageWaitForFunctionOptions
+            {
+                Timeout = 25000
+            });
         }
 
         public async Task WaitForPageStableAsync()

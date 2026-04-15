@@ -5,22 +5,6 @@ using System.Text.RegularExpressions;
 
 namespace WiseUltimaTests.Pages.WiseBoard
 {
-    public enum StatusType
-    {
-        Green,
-        Amber,
-        Red
-    }
-    public enum CardType
-    {
-        Server,
-        Storage,
-        Database,
-        Network,
-        Middleware,
-        Backup
-    }
-
     public class WiseBoardPage : BasicSetup
     {
         public WiseBoardPage(IPage page) : base(page) { }
@@ -139,4 +123,20 @@ namespace WiseUltimaTests.Pages.WiseBoard
             await ValidateCardStatusAsync(card, StatusType.Red);
         }
     }           
+
+    public enum CardType
+    {
+        Server,
+        Storage,
+        Database,
+        Network,
+        Middleware,
+        Backup
+    }
+    public enum StatusType
+    {
+        Green,
+        Amber,
+        Red
+    }
 }

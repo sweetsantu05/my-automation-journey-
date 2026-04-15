@@ -41,6 +41,7 @@ namespace WiseUltimaTests.Tests.AppMetrics
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _appMetricsPage.NavigateToAppMetricsAsync();
+                await Assertions.Expect(Page.GetByRole(AriaRole.Link, new() { Name = "App Metrics" })).ToBeVisibleAsync();
 
                 Logger.Info("TC_001: Navigated to App Metrics page successfully.");
 
@@ -57,6 +58,7 @@ namespace WiseUltimaTests.Tests.AppMetrics
             {
                 await _appMetricsPage.NavigateToAppMetricsAsync();
                 await _appMetricsPage.VerifyAppMetricsLoadedAsync();
+                await Assertions.Expect(Page.GetByText("Apps monitored:")).ToBeVisibleAsync();
 
                 Logger.Info("TC_026: App Metrics page loaded successfully.");
 
