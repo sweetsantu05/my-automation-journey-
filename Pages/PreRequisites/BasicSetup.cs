@@ -1,7 +1,10 @@
 ﻿using Allure.Xunit.Attributes.Steps;
 using Microsoft.Playwright;
+using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography.X509Certificates;
+
 using System.Text.RegularExpressions;
-using WiseUltimaTests.Utils;
+
 
 namespace WiseUltimaTests.Pages.PreRequisites
 {
@@ -14,31 +17,12 @@ namespace WiseUltimaTests.Pages.PreRequisites
             Page = page;
         }
 
-        /* ---------------- LOGIN ---------------- */
-
         public async Task LoginAsync(string username, string password)
         {
             await Page.GetByPlaceholder("Enter your email").FillAsync(username);
             await Page.GetByPlaceholder("Enter your password").FillAsync(password);
-
-            await Page.GetByRole(
-                    AriaRole.Button,
-                    new() { Name = "Sign In" }
-                )
-                .ClickAsync();
+            await Page.GetByRole(AriaRole.Button,new() { Name = "Sign In" }).ClickAsync();        
         }
-
-        public async Task LoginIfNeededAsync(string username, string password)
-        {
-            var emailField = Page.GetByPlaceholder("Enter your email");
-
-            if (await emailField.IsVisibleAsync())
-            {
-                await LoginAsync(username, password);
-            }
-        }
-
-        /* ---------------- SIGN UP ---------------- */
 
         public async Task SignUpAsync(
             string name,
@@ -72,8 +56,6 @@ namespace WiseUltimaTests.Pages.PreRequisites
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
 
-        // ---------------- DASHBOARD COMMON FLOW ----------------
-
         protected ILocator CurrentTab =>
             Page.GetByRole(AriaRole.Button, new() { Name = "Current" });
 
@@ -83,11 +65,8 @@ namespace WiseUltimaTests.Pages.PreRequisites
         protected ILocator MPredictTab =>
             Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" });
 
-        // ✅ FIXED: "Application" text doesn't exist, using direct Critical App selectors
-        protected ILocator CriticalApp1 =>
-            Page.GetByText("Critical App 1", new() { Exact = true }).First;
-        protected ILocator CriticalApp2 =>
-            Page.GetByText("Critical App 2", new() { Exact = true }).First;
+        protected ILocator ApplicationOptions =>
+            Page.GetByText("Critical App");
 
         protected ILocator ServerCard =>
             Page.GetByText("Server", new() { Exact = true }).First;
@@ -116,19 +95,53 @@ namespace WiseUltimaTests.Pages.PreRequisites
             await WaitForDashboardStableAsync();
         }
 
-        // ✅ SUPER FIXED: Skip "Application" dropdown entirely - direct app selection
-        // ✅ ULTRA DEFENSIVE: Skip Critical App selection completely
         public async Task ClickRandomCriticalAppAsync()
         {
-            await ScreenshotHelper.TakeScreenshotAsync(Page, "skipping_critical_app_selection");
-            await WaitForDashboardStableAsync();
+            await WaitForIconToLoadAsync(Page);
+            await WaitForPageStableAsync();
+            await ApplicationOptions.ClickAsync();
+            var apps = new[]
+            {
+                Page.GetByText("Critical App 1", new() { Exact = true }).First,
+                Page.GetByText("Critical App 2", new() { Exact = true }).First
+            };
 
-            // Just wait - some tests work without app selection
-            Logger.Warn("⚠️ SKIPPING Critical App selection - dashboard may not have expected apps");
-            await Page.WaitForTimeoutAsync(2000);
+            await apps[Random.Shared.Next(apps.Length)].ClickAsync();
+        }
+       public async Task WaitForIconToLoadAsync(IPage page)
+        {
+            await page.WaitForFunctionAsync(@"
+                () => {
+                    const images = Array.from(document.images);
+
+                    const target = images.find(img => 
+                        img.src.includes('Backup.svg') || 
+                        img.src.includes('Backup.png')
+                    );
+
+                    return ta  rget && target.complete && target.naturalWidth > 0;
+                }
+            ", new PageWaitForFunctionOptions
+            {
+                Timeout = 25000
+            });
         }
 
+        public async Task WaitForPageStableAsync()
+        {
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
+            await Page.WaitForFunctionAsync(@"
+                () => {
+                    const loaders = document.querySelectorAll(
+                        '.mud-progress-circular, .loading, .spinner'
+                    );
+                    return loaders.length === 0;
+                }
+            ");
+
+            await Page.WaitForTimeoutAsync(500);
+        }
 
         public async Task VerifyServerLoadedAsync()
         {
@@ -136,29 +149,30 @@ namespace WiseUltimaTests.Pages.PreRequisites
                 .ToBeVisibleAsync(new() { Timeout = 20000 });
         }
 
-        public async Task WaitForWiseCardsToLoadAsync()
+        public async Task SwitchBasedOnAppAsync()
         {
+            var currentTab = Page.Locator("button:has-text('CURRENT')");
+
+            if (await currentTab.CountAsync() > 0 && await currentTab.IsVisibleAsync())
+            {
+                await currentTab.ClickAsync();
+            }
+            else
+            {
+                Console.WriteLine(" CURRENT not available → switching to D-PREDICT");
+                await Page.Locator("button:has-text('D-PREDICT')").ClickAsync();
+            }
+
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-            await Page.GetByText("Server", new() { Exact = true })
-                .First
-                .WaitForAsync(new LocatorWaitForOptions
-                {
-                    Timeout = 40000
-                });
-        }
-
-        public async Task VerifyWiseCardsAsync()
-        {
-            await Assertions.Expect(ServerCard).ToBeVisibleAsync();
         }
 
         public async Task WaitForPageAsync(int seconds)
         {
             await Task.Delay(seconds * 1000);
         }
+        public async Task NavMenuToggleButton()
+        {
+            await Page.Locator(".mud-navmenu > div:nth-child(2)").ClickAsync();
+        }
     }
 }
-
-
-
