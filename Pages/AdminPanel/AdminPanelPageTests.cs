@@ -2,6 +2,7 @@ using Microsoft.Playwright;
 using WiseUltimaTests.Pages.AdminPanel;
 using WiseUltimaTests.Pages.Login;
 using WiseUltimaTests.Pages.PreRequisites;
+using System.Text.RegularExpressions;
 using WiseUltimaTests.TestHooks;
 using WiseUltimaTests.Utils;
 using Xunit;
@@ -42,6 +43,7 @@ namespace WiseUltimaTests.Tests.AdminPanel
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _adminPage.OpenAdminPanel();
+                await Assertions.Expect(Page.GetByRole(AriaRole.Heading).Filter(new() { HasText = "Welcome" })).ToBeVisibleAsync();
 
                 Logger.Info("TC_001: Navigated to Admin Panel successfully.");
 
@@ -57,6 +59,8 @@ namespace WiseUltimaTests.Tests.AdminPanel
             {
                 await _adminPage.OpenAdminPanel();
                 await _adminPage.VerifyAdminPanelLoadedAsync();
+                await Assertions.Expect(Page.GetByRole(AriaRole.Heading).Filter(new() { HasText = "Welcome" })).ToBeVisibleAsync();
+
 
                 Logger.Info("TC_002: Admin Panel loaded successfully.");
 

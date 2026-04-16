@@ -41,6 +41,7 @@ namespace WiseUltimaTests.Pages.AdminPanel
         {
             await _basicSetup.NavMenuToggleButton();
             await ProfileIcon.ClickAsync();
+            // await AdminPanelButton.ClickAsync();
             
         }
         public async Task OpenAdminPanel()

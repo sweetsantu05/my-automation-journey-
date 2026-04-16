@@ -41,6 +41,7 @@ namespace WiseUltimaTests.Tests.WiseAdmin
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _wiseAdminPage.NavigateToWiseAdminAsync();
+                await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Current page" })).ToBeVisibleAsync();
 
                 Logger.Info("TC_002: Navigated to Wise Admin page successfully.");
 
@@ -56,7 +57,7 @@ namespace WiseUltimaTests.Tests.WiseAdmin
             {
                 await _wiseAdminPage.NavigateToWiseAdminAsync();
                 await _wiseAdminPage.VerifyWiseAdminPageLoadedAsync();
-
+                await Assertions.Expect(Page.Locator(".mud-card-content").First).ToBeVisibleAsync();
                 Logger.Info("TC_002: Wise Admin page loaded successfully.");
 
             }, nameof(TC_002_Verify_WiseAdmin_Loaded));

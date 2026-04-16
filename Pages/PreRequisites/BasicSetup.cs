@@ -119,7 +119,7 @@ namespace WiseUltimaTests.Pages.PreRequisites
                         img.src.includes('Backup.png')
                     );
 
-                    return ta  rget && target.complete && target.naturalWidth > 0;
+                    return target && target.complete && target.naturalWidth > 0;
                 }
             ", new PageWaitForFunctionOptions
             {

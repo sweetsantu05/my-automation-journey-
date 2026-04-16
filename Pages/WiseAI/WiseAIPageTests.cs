@@ -69,11 +69,12 @@ namespace WiseUltimaTests.Tests.WiseAI
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _wiseAIPage.OpenAsync();
-
                 await _wiseAIPage.ClickRandomPopularQueryAsync();
                 await _wiseAIPage.VerifyAiResponse();
 
                 await _wiseAIPage.MultiplePopularQueriesFromSidebarAsync(3);
+                await Assertions.Expect(Page.Locator(".mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.circle-icon-button")).ToBeVisibleAsync();
+
 
                 Logger.Info("TC_003: Multiple popular queries handled successfully.");
             }, nameof(TC_003_WiseAI_Should_Handle_Multiple_Popular_Queries));
@@ -90,6 +91,7 @@ namespace WiseUltimaTests.Tests.WiseAI
                 await _wiseAIPage.OpenAsync();
                 await _wiseAIPage.SelectVMAndAskRandomQuestionAsync();
                 await _wiseAIPage.VerifyAiResponse();
+                await Assertions.Expect(Page.Locator(".mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.circle-icon-button")).ToBeEnabledAsync();
 
                 Logger.Info("TC_004: AI responded correctly after selecting VM and asking question.");
             }, nameof(TC_004_VM_Context_Should_Respond_To_Query));
@@ -130,6 +132,8 @@ namespace WiseUltimaTests.Tests.WiseAI
                 await _wiseAIPage.SelectVMAndAskRandomQuestionAsync();
 
                 await _wiseAIPage.VerifyAiResponse();
+                await Assertions.Expect(Page.Locator(".mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.circle-icon-button")).ToBeEnabledAsync();
+
 
                 Logger.Info("TC_006: VM selection and query flow verified.");
             }, nameof(TC_006_VM_Should_Be_Selected_Before_Query));

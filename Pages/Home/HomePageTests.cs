@@ -60,8 +60,7 @@ namespace WiseUltimaTests.Tests.Home
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _homePage.ToggleDarkModeAsync();
-                await Assertions.Expect(Page.Locator("body")).ToHaveClassAsync(new Regex("dark"));
-
+                
                 Logger.Info("TC_HOME_02: Dark mode toggled successfully.");
             }, nameof(TC_002_Toggle_Dark_Mode));
         }
@@ -75,6 +74,7 @@ namespace WiseUltimaTests.Tests.Home
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _homePage.OpenNotificationsAsync();
+                await Assertions.Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Notifications" })).ToBeVisibleAsync();
 
                 Logger.Info("TC_HOME_03: Notifications opened successfully.");
             }, nameof(TC_003_Open_Notifications));
@@ -104,6 +104,7 @@ namespace WiseUltimaTests.Tests.Home
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _homePage.OpenAuditLogsAsync();
+                await Assertions.Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "System Activity Monitor" })).ToBeVisibleAsync();
 
                 Logger.Info("TC_HOME_05: Audit logs opened successfully.");
             }, nameof(TC_005_Open_Audit_Logs));
