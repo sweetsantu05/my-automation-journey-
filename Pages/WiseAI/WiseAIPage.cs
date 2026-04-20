@@ -218,84 +218,44 @@ namespace WiseUltimaTests.Pages.WiseAI
             }
         }
 
-        // public async Task MultiplePopularQueriesFromSidebarAsync(int count = 3)
-        // {
-        //     for (int i = 0; i < count; i++)
-        //     {
-        //         int total = await RightPanelPopularQueries.CountAsync();
-
-        //         Assert.True(total > 0, "No popular queries found in sidebar");
-
-        //         int randomIndex = _random.Next(total);
-
-        //         var selected = RightPanelPopularQueries.Nth(randomIndex);
-
-        //         await selected.ScrollIntoViewIfNeededAsync();
-
-        //         var text = await selected.InnerTextAsync();
-
-        //         int previousCount = await AiMessageBubble.CountAsync();
-
-        //         await selected.ClickAsync();
-
-        //         await Page.WaitForFunctionAsync(
-        //             @"(prev) => document.querySelectorAll('.ai-message-bubble').length > prev",
-        //             previousCount,
-        //             new() { Timeout = 30000 }
-        //         );
-
-        //         var latest = AiMessageBubble.Last;
-
-        //         await Assertions.Expect(latest).ToBeVisibleAsync();
-
-        //         await Assertions.Expect(latest)
-        //             .ToHaveTextAsync(new Regex(@"\S"), new() { Timeout = 30000 });
-
-        //         var response = await latest.InnerTextAsync();
-
-        //     }
-        // }
-
         public async Task MultiplePopularQueriesFromSidebarAsync(int count = 3)
-{
-    for (int i = 0; i < count; i++)
-    {
-        await Assertions.Expect(RightPanelPopularQueries.First)
-            .ToBeVisibleAsync(new() { Timeout = 5000 });
+        {
+            for (int i = 0; i < count; i++)
+            {
+                await Assertions.Expect(RightPanelPopularQueries.First)
+                    .ToBeVisibleAsync(new() { Timeout = 5000 });
 
-        int total = await RightPanelPopularQueries.CountAsync();
+                int total = await RightPanelPopularQueries.CountAsync();
 
-        Assert.True(total > 0, "No popular queries found");
+                Assert.True(total > 0, "No popular queries found");
 
-        int randomIndex = _random.Next(total);
+                int randomIndex = _random.Next(total);
 
-        var selected = RightPanelPopularQueries.Nth(randomIndex);
+                var selected = RightPanelPopularQueries.Nth(randomIndex);
 
-        await selected.ScrollIntoViewIfNeededAsync();
+                await selected.ScrollIntoViewIfNeededAsync();
 
-        var text = await selected.InnerTextAsync();
+                var text = await selected.InnerTextAsync();
 
-        int previousCount = await AiMessageBubble.CountAsync();
+                int previousCount = await AiMessageBubble.CountAsync();
 
-        await selected.ClickAsync();
+                await selected.ClickAsync();
 
-        // Logger.Info($"Selected Query {i + 1}: {text}");
 
-        await Page.WaitForFunctionAsync(
-            @"(prev) => document.querySelectorAll('.ai-message-bubble').length > prev",
-            previousCount,
-            new() { Timeout = 30000 }
-        );
+                await Page.WaitForFunctionAsync(
+                    @"(prev) => document.querySelectorAll('.ai-message-bubble').length > prev",
+                    previousCount,
+                    new() { Timeout = 30000 }
+                );
 
-        var latest = AiMessageBubble.Last;
+                var latest = AiMessageBubble.Last;
 
-        await Assertions.Expect(latest).ToBeVisibleAsync();
+                await Assertions.Expect(latest).ToBeVisibleAsync();
 
-        await Assertions.Expect(latest)
-            .ToHaveTextAsync(new Regex(@"\S"), new() { Timeout = 30000 });
+                await Assertions.Expect(latest)
+                    .ToHaveTextAsync(new Regex(@"\S"), new() { Timeout = 30000 });
 
-        // Logger.Info($"AI Response {i + 1}: {await latest.InnerTextAsync()}");
-    }
-}
+            }
+        }
     }
 }
