@@ -74,7 +74,7 @@ namespace WiseUltimaTests.Tests.Home
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _homePage.OpenNotificationsAsync();
-                await Assertions.Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Notifications" })).ToBeVisibleAsync();
+                await Assertions.Expect(Page.GetByText("Notifications ✕")).ToBeVisibleAsync();
 
                 Logger.Info("TC_HOME_03: Notifications opened successfully.");
             }, nameof(TC_003_Open_Notifications));

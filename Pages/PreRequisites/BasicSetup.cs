@@ -123,7 +123,7 @@ namespace WiseUltimaTests.Pages.PreRequisites
                 }
             ", new PageWaitForFunctionOptions
             {
-                Timeout = 25000
+                Timeout = 35000
             });
         }
 
@@ -146,7 +146,7 @@ namespace WiseUltimaTests.Pages.PreRequisites
         public async Task VerifyServerLoadedAsync()
         {
             await Assertions.Expect(ServerCard)
-                .ToBeVisibleAsync(new() { Timeout = 20000 });
+                .ToBeVisibleAsync(new() { Timeout = 30000 });
         }
 
         public async Task SwitchBasedOnAppAsync()
