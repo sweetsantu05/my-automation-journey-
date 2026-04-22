@@ -1,14 +1,16 @@
 using Microsoft.Playwright;
+using WiseUltimaTests.Utils;
 
 namespace WiseUltimaTests.TestHooks
 {
-    public abstract class TestBaseFixture : IAsyncLifetime
+    public abstract class TestBaseFixture :IClassFixture<GlobalTestFixture>, IAsyncLifetime
     {
         private IPlaywright _playwright = null!;
         private IBrowser _browser = null!;
 
         protected IBrowserContext Context = null!;
         protected IPage Page = null!;
+        protected AttachmentHelper _attachmentHelper = null!;
 
         public async Task InitializeAsync()
         {
@@ -21,6 +23,8 @@ namespace WiseUltimaTests.TestHooks
 
             Context = await _browser.NewContextAsync();
             Page = await Context.NewPageAsync();
+            _attachmentHelper = new AttachmentHelper(Context);
+    
         }
 
         public async Task DisposeAsync()
@@ -38,28 +42,3 @@ namespace WiseUltimaTests.TestHooks
         }
     }
 }
-
-
-// using Microsoft.Playwright;
-// using WiseUltimaTests.TestHooks;
-// using Xunit;
-
-// namespace WiseUltimaTests.TestHooks
-// {
-//     public class TestBaseFixture : IClassFixture<GlobalTestFixture>, IAsyncLifetime
-//     {
-//         protected IBrowserContext Context { get; private set; } = null!;
-//         protected IPage Page { get; private set; } = null!;
-
-//         public async Task InitializeAsync()
-//         {
-//             Context = await GlobalTestFixture.Browser!.NewContextAsync();
-//             Page = await Context.NewPageAsync();
-//         }
-
-//         public async Task DisposeAsync()
-//         {
-//             await Context.CloseAsync();
-//         }
-//     }
-// }

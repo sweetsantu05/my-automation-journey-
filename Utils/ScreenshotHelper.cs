@@ -1,8 +1,8 @@
-// Utils/ScreenshotHelper.cs
 using Microsoft.Playwright;
 using System;
 using System.IO;
 using WiseUltimaTests.Utils;
+using Allure.Net.Commons;
 
 namespace WiseUltimaTests.Utils
 {
@@ -19,11 +19,9 @@ namespace WiseUltimaTests.Utils
             try
             {
                 Directory.CreateDirectory(ScreenshotDir);
-                Console.WriteLine($"[ScreenshotHelper] Folder ensured: {ScreenshotDir}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ScreenshotHelper] FAILED to create folder: {ex.Message}");
                 throw;
             }
         }
@@ -53,9 +51,8 @@ namespace WiseUltimaTests.Utils
                     catch (IOException) { } // Ignore if file is locked
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                Console.WriteLine($"[ScreenshotHelper] Warning: Could not clean old screenshots: {ex.Message}");
             }
             
 
@@ -72,7 +69,32 @@ namespace WiseUltimaTests.Utils
             });
 
             Console.WriteLine($"[SCREENSHOT] SAVED: {fullPath}");
-            Logger.Info($"Screenshot saved: {fullPath}");
+            var fullAbsolutePath = Path.GetFullPath(fullPath);
+            Logger.Info($"Screenshot saved: {fullAbsolutePath}");
+            
+            if (File.Exists(fullAbsolutePath))
+            {
+                try 
+                {
+                    AllureApi.AddAttachment(
+                        $"{testName}.png",
+                        "image/png",
+                        fullAbsolutePath
+                    
+                    );
+
+                    Logger.Info($"[SCREENSHOT] ATTACHED to Allure: {fullAbsolutePath}");
+                }
+                catch (Exception attachEx)
+                {
+                    Logger.Error($"Failed to attach screenshot to Allure: {attachEx.Message}");
+                    Console.WriteLine($"Failed to attach screenshot: {attachEx.Message}");
+                }
+            }
+            else
+            {
+                Logger.Warn($"Screenshot file not found for attachment: {fullPath}");
+            }
             return fullPath;
         }
     }
