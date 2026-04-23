@@ -60,6 +60,66 @@ namespace WiseUltimaTests.Tests.WiseActions
                 Logger.Info("TC_WISEACTION_02: Wise Actions page and action modal validated successfully.");
             }, nameof(TC_002_WiseActions_Should_Load_W_Pridict));
         }
+
+        [Fact]
+        [Trait("Category", "Smoke")]
+        [AllureOwner("TC_003_WiseActions_Should_Load_M_Pridict")]
+        [AllureTag("Smoke")]
+        public async Task TC_003_WiseActions_Should_Load_M_Pridict()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchToMPredictAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.VerifyActButton();
+                Logger.Info("TC_WISEACTION_03: Wise Actions page and action modal validated successfully.");
+            }, nameof(TC_003_WiseActions_Should_Load_M_Pridict));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_004_Server_Current_Data_Validation")]
+        [AllureTag("Regression")]
+        public async Task TC_004_Server_Current_Data_Validation()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchBasedOnAppAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Server);
+            }, nameof(TC_004_Server_Current_Data_Validation));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_005_Server_WPredict_Data_Validation")]
+        [AllureTag("Regression")]
+        public async Task TC_005_Server_WPredict_Data_Validation()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+
+                await _basicSetup.SwitchToWPredictAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Server);
+            }, nameof(TC_005_Server_WPredict_Data_Validation));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_006_Server_MPredict_Data_Validation")]
+        [AllureTag("Regression")]
+        public async Task TC_006_Server_MPredict_Data_Validation()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchToMPredictAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Server);
+            }, nameof(TC_006_Server_MPredict_Data_Validation));
+        }
+
+       
         }
     }
 }
