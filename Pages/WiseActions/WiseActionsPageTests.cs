@@ -119,7 +119,88 @@ namespace WiseUltimaTests.Tests.WiseActions
             }, nameof(TC_006_Server_MPredict_Data_Validation));
         }
 
-       
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_007_Storage_Current_Data_Validation")]
+        [AllureTag("Regression")]
+        public async Task TC_007_Storage_Current_Data_Validation()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchBasedOnAppAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Storage);
+            }, nameof(TC_007_Storage_Current_Data_Validation));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_008_Storage_WPredict_Data_Validation")]
+        [AllureTag("Regression")]
+        public async Task TC_008_Storage_WPredict_Data_Validation()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchToWPredictAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Storage);
+            }, nameof(TC_008_Storage_WPredict_Data_Validation));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_009_Storage_MPredict_Data_Validation")]
+        [AllureTag("Regression")]
+        public async Task TC_009_Storage_MPredict_Data_Validation()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchToMPredictAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Storage);
+            }, nameof(TC_009_Storage_MPredict_Data_Validation));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_010_Database_Current_Data_Validation")]
+        [AllureTag("Regression")]
+        public async Task TC_010_Database_Current_Data_Validation()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchBasedOnAppAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Database);
+            }, nameof(TC_010_Database_Current_Data_Validation));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_011_Database_WPredict_Data_Validation")]
+        [AllureTag("Regression")]
+        public async Task TC_011_Database_WPredict_Data_Validation()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchToWPredictAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Database);
+            }, nameof(TC_011_Database_WPredict_Data_Validation));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_012_Database_MPredict_Data_Validation")]
+        [AllureTag("Regression")]
+        public async Task TC_012_Database_MPredict_Data_Validation()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchToMPredictAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Database);
+            }, nameof(TC_012_Database_MPredict_Data_Validation));
         }
     }
 }
