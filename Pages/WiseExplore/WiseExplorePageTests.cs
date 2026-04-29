@@ -399,7 +399,151 @@ namespace WiseUltimaTests.Tests.WiseExplore
 
             }, nameof(TC_020_Tripping_Filter_Count_Verification));
         }   
-        
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_021_Tripping_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_021_Tripping_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectTrippingAsync();
+
+                await _wiseExplorePage.ValidateAllRowsStatusWithPaginationAsync("Tripping", "#FFBF00");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+                Logger.Info("TC_021: All rows are Tripping with YELLOW color");
+
+            }, nameof(TC_021_Tripping_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_022")]
+        [AllureTag("Regression")]
+        public async Task TC_022_Safe_Filter_Count_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectSafeAsync();
+
+                int expected = await _wiseExplorePage.GetTotalResultsCountAsync();
+                int actual = await _wiseExplorePage.GetTotalRowsAcrossPagesOptimizedAsync();
+
+                Assert.Equal(expected, actual);
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+                Logger.Info($"TC_022: Safe count matched {actual}");
+
+            }, nameof(TC_022_Safe_Filter_Count_Verification));
+        }
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_023_Safe_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_023_Safe_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectSafeAsync();
+
+                await _wiseExplorePage.ValidateAllRowsStatusWithPaginationAsync("Safe", "#38b000");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+                Logger.Info("TC_023: All rows are Safe with GREEN color");
+
+            }, nameof(TC_023_Safe_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_025_Storage_Type_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_025_Storage_Type_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectStorageAsync();
+
+                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Storage");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_025_Storage_Type_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_026_Database_Type_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_026_Database_Type_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectDatabaseAsync();
+
+                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Database");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_026_Database_Type_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_027_Network_Type_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_027_Network_Type_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectNetworkAsync();
+
+                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Network");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_027_Network_Type_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_028_Server_Type_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_028_Server_Type_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectServerAsync();
+
+                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Server");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_028_Server_Type_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_029_Middleware_Type_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_029_Middleware_Type_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectMiddlewareAsync();
+
+                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Middleware");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_029_Middleware_Type_Filter_Verification));
+        }
+
+       
     }
 }
 
