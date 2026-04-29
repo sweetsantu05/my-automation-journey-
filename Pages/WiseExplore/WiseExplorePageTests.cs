@@ -543,7 +543,22 @@ namespace WiseUltimaTests.Tests.WiseExplore
             }, nameof(TC_029_Middleware_Type_Filter_Verification));
         }
 
-       
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_030_Backup_Type_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_030_Backup_Type_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectBackupAsync();
+
+                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Backup");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_030_Backup_Type_Filter_Verification));
+        }
     }
 }
 
