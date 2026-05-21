@@ -524,5 +524,91 @@ namespace WiseUltimaTests.Tests.Home
 
             }, nameof(TC_024_Clear_Date_Filter));
         }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_025_Navigate_WiseBoard")]
+        [AllureTag("Regression")]
+        public async Task TC_025_Navigate_WiseBoard()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.VerifyHomePageLoadedAsync();
+                await Assertions.Expect(Page.GetByText(new Regex(@"Welcome"))).ToBeVisibleAsync();
+                await _homePage.Clickwiseborad();
+                await _setup.WaitForDashboardStableAsync();
+                await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-board"));
+
+                Logger.Info("TC_25: wise board page loaded successfully.");
+            }, nameof(TC_025_Navigate_WiseBoard));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_026_Navigate_WiseAction")]
+        [AllureTag("Regression")]
+        public async Task TC_026_Navigate_WiseAction()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.VerifyHomePageLoadedAsync();
+                await Assertions.Expect(Page.GetByText(new Regex(@"Welcome"))).ToBeVisibleAsync();
+                await _homePage.ClickWiseAction();
+                await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-actions"));
+
+                Logger.Info("TC_26: wise Action page loaded successfully.");
+            }, nameof(TC_026_Navigate_WiseAction));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_028_Navigate_WiseExplore")]
+        [AllureTag("Regression")]
+        public async Task TC_028_Navigate_WiseExplore()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.VerifyHomePageLoadedAsync();
+                await Assertions.Expect(Page.GetByText(new Regex(@"Welcome"))).ToBeVisibleAsync();
+                await _homePage.ClickWiseAction();
+                await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-explore"));
+
+                Logger.Info("TC_28: wise Wise explore page loaded successfully.");
+            }, nameof(TC_028_Navigate_WiseExplore));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_029_Navigate_WiseAi")]
+        [AllureTag("Regression")]
+        public async Task TC_029_Navigate_WiseAi()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.VerifyHomePageLoadedAsync();
+                await Assertions.Expect(Page.GetByText(new Regex(@"Welcome"))).ToBeVisibleAsync();
+                await _homePage.ClickWiseAi();
+                await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/new-chat"));
+
+                Logger.Info("TC_29: wise ai page loaded successfully.");
+            }, nameof(TC_029_Navigate_WiseAi));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_030_Navigate_WiseAgent")]
+        [AllureTag("Regression")]
+        public async Task TC_030_Navigate_WiseAgent()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.VerifyHomePageLoadedAsync();
+                await Assertions.Expect(Page.GetByText(new Regex(@"Welcome"))).ToBeVisibleAsync();
+                await _homePage.ClickWiseAgnet();
+                await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-agents"));
+
+                Logger.Info("TC_30: wise agnet page loaded successfully.");
+            }, nameof(TC_030_Navigate_WiseAgent));
+        }  
     }
 }                  

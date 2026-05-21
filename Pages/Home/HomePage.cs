@@ -1,6 +1,7 @@
 using Microsoft.Playwright;
 using WiseUltimaTests.Pages.PreRequisites;
 using WiseUltimaTests.Utils;
+using System.Text.RegularExpressions;
 
 
 namespace WiseUltimaTests.Pages.Home
@@ -333,6 +334,46 @@ namespace WiseUltimaTests.Pages.Home
             await ClickDateAsync(startDate);
 
             return (startDate, today);
+        }
+        private ILocator WiseBoardCard =>
+            _page.GetByRole(AriaRole.Heading, new() { Name = "Wise Board" });
+
+        public async Task Clickwiseborad()
+        {
+            await WiseBoardCard.ClickAsync();
+        }
+        private ILocator WiseActionsCard =>
+            _page.GetByRole(AriaRole.Heading, new() { Name = "Wise Actions" });
+
+        public async Task ClickWiseAction ()
+        {
+            await WiseActionsCard.ClickAsync();
+            await _setup.WaitForDashboardStableAsync();
+        }
+
+        private ILocator WiseExplorecard => _page.GetByRole(AriaRole.Heading, new() { Name = "Wise Explore" });
+
+        public async Task ClickWiseExplore()
+        {
+            await WiseExplorecard.ClickAsync();
+            await _setup.WaitForDashboardStableAsync();
+        }
+
+        private ILocator WiseAICard =>
+            _page.GetByRole(AriaRole.Heading, new() {  Name = "Wise AI" });
+
+        public async Task ClickWiseAi()
+        {
+            await WiseAICard.ClickAsync();
+            await _setup.WaitForDashboardStableAsync();
+        }
+
+        private ILocator WiseAgentsCard =>
+            _page.GetByRole(AriaRole.Heading, new() { Name = "Wise Agents" });
+
+        public async Task ClickWiseAgnet()
+        {
+            await WiseAgentsCard.ClickAsync();
         }
     }
 }

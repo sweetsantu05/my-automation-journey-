@@ -383,7 +383,7 @@ namespace WiseUltimaTests.Tests.WiseActions
 
                 if (isDisabled)
                 {
-                    Console.WriteLine("✅ Ticket already raised - button disabled");
+                    Console.WriteLine(" Ticket already raised - button disabled");
                     Assert.True(isDisabled);
                 }
                 else
