@@ -436,6 +436,25 @@ namespace WiseUltimaTests.Tests.Home
             }, nameof(TC_020_App_Clear));
         }
 
-        
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_021_App_Data_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_021_App_Data_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.OpenAuditLogsAsync();
+
+                var value = await _homePage.SelectAppAsync();
+
+                await _homePage.VerifyColumnFilterAsync(4, value);
+
+                Logger.Info("App data verified");
+
+            }, nameof(TC_021_App_Data_Verification));
+        }
+
+          
     }
 }                  
