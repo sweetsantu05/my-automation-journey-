@@ -455,6 +455,111 @@ namespace WiseUltimaTests.Tests.Home
             }, nameof(TC_021_App_Data_Verification));
         }
 
-          
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_022_Date_Filter")]
+        public async Task TC_022_Date_Filter()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.OpenAuditLogsAsync();
+
+                var (start, end) = await _homePage.SelectLast7DaysRangeAsync();
+
+                // await _homePage.VerifyDateRangeAsync(start, end);
+
+                Logger.Info($"Date filter applied from {start} to {end}");
+
+            }, nameof(TC_022_Date_Filter));
+        }
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_023_Date_Filter_Verification")]
+        public async Task TC_023_Date_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.OpenAuditLogsAsync();
+
+                var (start, end) = await _homePage.SelectLast7DaysRangeAsync();
+
+                var rows = Page.Locator("table tbody tr");
+
+                int count = await rows.CountAsync();
+
+                for (int i = 0; i < count; i++)
+                {
+                    var text = await rows.Nth(i).Locator("td").Nth(0).InnerTextAsync();
+
+                    DateTime date = DateTime.Parse(text.Split('\n')[0]);
+
+                    Assert.True(date >= start && date <= end);
+                }
+
+                Logger.Info("Date filter data verified");
+
+            }, nameof(TC_023_Date_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_024_Clear_Date_Filter")]
+        public async Task TC_024_Clear_Date_Filter()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.OpenAuditLogsAsync();
+
+                await _homePage.SelectLast7DaysRangeAsync();
+
+                await _homePage.Verify_clear_filter();
+
+                var rows = Page.Locator("table tbody tr");
+
+                int count = await rows.CountAsync();
+
+                Assert.True(count > 1);
+
+                Logger.Info("Date filter cleared successfully");
+
+            }, nameof(TC_024_Clear_Date_Filter));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_025_Navigate_WiseBoard")]
+        [AllureTag("Regression")]
+        public async Task TC_025_Navigate_WiseBoard()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.VerifyHomePageLoadedAsync();
+                await Assertions.Expect(Page.GetByText(new Regex(@"Welcome"))).ToBeVisibleAsync();
+                await _homePage.Clickwiseborad();
+                await _setup.WaitForDashboardStableAsync();
+                await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-board"));
+
+                Logger.Info("TC_25: wise board page loaded successfully.");
+            }, nameof(TC_025_Navigate_WiseBoard));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_026_Navigate_WiseAction")]
+        [AllureTag("Regression")]
+        public async Task TC_026_Navigate_WiseAction()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.VerifyHomePageLoadedAsync();
+                await Assertions.Expect(Page.GetByText(new Regex(@"Welcome"))).ToBeVisibleAsync();
+                await _homePage.ClickWiseAction();
+                await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-actions"));
+
+                Logger.Info("TC_26: wise Action page loaded successfully.");
+            }, nameof(TC_026_Navigate_WiseAction));
+        }
+
+         
     }
 }                  
