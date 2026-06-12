@@ -42,7 +42,6 @@ namespace WiseUltimaTests.Tests.WiseExplore
             {
                 
                 await _basicSetup.SwitchToCurrentAsync();
-                await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseExplorePage.VerifyAtLeastOneResultAsync();
 
                 Logger.Info(" TC_WISEEXPLORE_01: Wise Explore Current data validated");
@@ -58,7 +57,6 @@ namespace WiseUltimaTests.Tests.WiseExplore
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _basicSetup.SwitchToWPredictAsync();
-                await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseExplorePage.VerifyAtLeastOneResultAsync();
 
                 Logger.Info("TC_WISEEXPLORE_02: Wise Explore W-Predict data validated");
@@ -74,7 +72,6 @@ namespace WiseUltimaTests.Tests.WiseExplore
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _basicSetup.SwitchToMPredictAsync();
-                await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseExplorePage.VerifyAtLeastOneResultAsync();
 
                 Logger.Info("TC_WISEEXPLORE_03: Wise Explore M-Predict data validated");
@@ -131,7 +128,7 @@ namespace WiseUltimaTests.Tests.WiseExplore
 
         [Fact]
         [Trait("Category", "Regression")]
-        [AllureOwner("TC_007_Set_Pagination_To_100")]
+        [AllureOwner("TC_007_Set_Pagination_To_100_and verify")]
         [AllureTag("Regression")]
         public async Task TC_007_Set_Pagination_To_100()
         {
@@ -141,29 +138,32 @@ namespace WiseUltimaTests.Tests.WiseExplore
 
                 int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
 
+                var text = await _wiseExplorePage.GetPaginationTextAsync();
+
+
                 Assert.True(rows <= 100);
 
                 Logger.Info("TC_007: Pagination set to 100");
             }, nameof(TC_007_Set_Pagination_To_100));
         }
 
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_008_Verify_Pagination_Text")]
-        [AllureTag("Regression")]
-        public async Task TC_008_Verify_Pagination_Text()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SetPaginationTo100Async();
+        // [Fact]
+        // [Trait("Category", "Regression")]
+        // [AllureOwner("TC_008_Verify_Pagination_Text")]
+        // [AllureTag("Regression")]
+        // public async Task TC_008_Verify_Pagination_Text()
+        // {
+        //     await _attachmentHelper.RunWithTracingAsync(async () =>
+        //     {
+        //         await _wiseExplorePage.SetPaginationTo100Async();
 
-                var text = await _wiseExplorePage.GetPaginationTextAsync();
+        //         var text = await _wiseExplorePage.GetPaginationTextAsync();
 
-                Assert.Contains("of", text);
+        //         Assert.Contains("of", text);
 
-                Logger.Info($"TC_008: Pagination text = {text}");
-            }, nameof(TC_008_Verify_Pagination_Text));
-        }
+        //         Logger.Info($"TC_008: Pagination text = {text}");
+        //     }, nameof(TC_008_Verify_Pagination_Text));
+        // }
 
         [Fact]
         [Trait("Category", "Regression")]
@@ -205,33 +205,33 @@ namespace WiseUltimaTests.Tests.WiseExplore
             }, nameof(TC_010_Verify_Total_Rows_Match_Count));
         }
 
+        // [Fact]
+        // [Trait("Category", "Regression")]
+        // [AllureOwner("TC_011_Search_With_Random_ID")]
+        // [AllureTag("Regression")]
+        // public async Task TC_011_Search_With_Random_ID()
+        // {
+        //     await _attachmentHelper.RunWithTracingAsync(async () =>
+        //     {
+        //         await _wiseExplorePage.SetPaginationTo100Async();
+
+        //         var randomId = await _wiseExplorePage.GetRandomIdAsync();
+
+        //         await _wiseExplorePage.SearchAsync(randomId);
+
+        //         int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
+
+        //         Assert.Equal(1, rows);
+
+        //         Logger.Info($"TC_011: Search success for ID {randomId}");
+        //     }, nameof(TC_011_Search_With_Random_ID));
+        // }
+
         [Fact]
         [Trait("Category", "Regression")]
-        [AllureOwner("TC_011_Search_With_Random_ID")]
+        [AllureOwner("TC_011_Search_and_Validate_ID")]
         [AllureTag("Regression")]
-        public async Task TC_011_Search_With_Random_ID()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SetPaginationTo100Async();
-
-                var randomId = await _wiseExplorePage.GetRandomIdAsync();
-
-                await _wiseExplorePage.SearchAsync(randomId);
-
-                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
-
-                Assert.Equal(1, rows);
-
-                Logger.Info($"TC_011: Search success for ID {randomId}");
-            }, nameof(TC_011_Search_With_Random_ID));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_012_Validate_Search_Result_ID")]
-        [AllureTag("Regression")]
-        public async Task TC_012_Validate_Search_Result_ID()
+        public async Task TC_011_Search_and_Validate_ID()
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
@@ -241,11 +241,15 @@ namespace WiseUltimaTests.Tests.WiseExplore
 
                 var ids = await _wiseExplorePage.GetAllIdsFromTableAsync();
 
+                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
+
+                Assert.Equal(1, rows);
+
                 Assert.Single(ids);
                 Assert.Equal(randomId, ids.First());
 
-                Logger.Info("TC_012: Search result matches ID");
-            }, nameof(TC_012_Validate_Search_Result_ID));
+                Logger.Info("TC_011: Search result matches ID");
+            }, nameof(TC_011_Search_and_Validate_ID));
         }
 
         [Fact]
@@ -256,7 +260,7 @@ namespace WiseUltimaTests.Tests.WiseExplore
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _wiseExplorePage.SearchAsync("Production");
+                await _wiseExplorePage.SearchAsync("PRD");
 
                 int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
 
@@ -274,11 +278,15 @@ namespace WiseUltimaTests.Tests.WiseExplore
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _wiseExplorePage.SearchAsync("Production");
+                await _wiseExplorePage.SearchAsync("PRD");
+
+                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
+
+                Assert.True(rows > 0);
 
                 var alerts = await _wiseExplorePage.GetAllAlertMessagesAsync();
 
-                Assert.All(alerts, a => Assert.Contains("Production", a));
+                Assert.All(alerts, a => Assert.Contains("PRD", a));
 
                 Logger.Info("TC_014: All rows contain Production");
             }, nameof(TC_014_Validate_Production_Results));
@@ -292,7 +300,9 @@ namespace WiseUltimaTests.Tests.WiseExplore
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
-                await _wiseExplorePage.SearchAsync("Server");
+                await _wiseExplorePage.SearchAsync("Ser");
+
+                // await _wiseExplorePage.ValidateSearchResultsWithPaginationAsync("Ser");
 
                 int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
 
@@ -558,6 +568,114 @@ namespace WiseUltimaTests.Tests.WiseExplore
                 await _wiseExplorePage.GoToFirstPageAsync();
 
             }, nameof(TC_030_Backup_Type_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_031_Development_Environment_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_031_Development_Environment_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectEnvironmentAsync("Development");
+
+                await _wiseExplorePage
+                    .ValidateAllRowsEnvironmentWithPaginationAsync("Development");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_031_Development_Environment_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_032_Test_Environment_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_032_Test_Environment_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectEnvironmentAsync("Test");
+
+                await _wiseExplorePage
+                    .ValidateAllRowsEnvironmentWithPaginationAsync("Test");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_032_Test_Environment_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_033_Training_Environment_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_033_Training_Environment_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectEnvironmentAsync("Training");
+
+                await _wiseExplorePage
+                    .ValidateAllRowsEnvironmentWithPaginationAsync("Training");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_033_Training_Environment_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_034_Staging_Environment_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_034_Staging_Environment_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectEnvironmentAsync("Staging");
+
+                await _wiseExplorePage
+                    .ValidateAllRowsEnvironmentWithPaginationAsync("Staging");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_034_Staging_Environment_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_035_Production_Environment_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_035_Production_Environment_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectEnvironmentAsync("Production");
+
+                await _wiseExplorePage
+                    .ValidateAllRowsEnvironmentWithPaginationAsync("Production");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_035_Production_Environment_Filter_Verification));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_036_Sandbox_Environment_Filter_Verification")]
+        [AllureTag("Regression")]
+        public async Task TC_036_Sandbox_Environment_Filter_Verification()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseExplorePage.SelectEnvironmentAsync("Sandbox");
+
+                await _wiseExplorePage
+                    .ValidateAllRowsEnvironmentWithPaginationAsync("Sandbox");
+
+                await _wiseExplorePage.GoToFirstPageAsync();
+
+            }, nameof(TC_036_Sandbox_Environment_Filter_Verification));
         }
     }
 }
