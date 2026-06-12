@@ -354,6 +354,61 @@ namespace WiseUltimaTests.Pages.WiseExplore
             await WaitForPageStableAsync();
         }
 
-        
+        public async Task SelectBackupAsync()
+        {
+            await BackupCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
+        }
+
+        public async Task ValidateAllRowsTypeWithPaginationAsync(string expectedType)
+        {
+            if (await NoRecordsMessage.IsVisibleAsync())
+            {
+                return;
+            }
+            
+            int total = await GetTotalResultsCountAsync();
+
+            if (total == 0)
+            {
+                var noData = Page.GetByText("No Records Found");
+                await Assertions.Expect(noData).ToBeVisibleAsync();
+                return;
+            }
+
+            await SetPaginationTo100Async();
+            await WaitForPageStableAsync();
+
+            int validated = 0;
+
+            while (true)
+            {
+                await WaitForPageStableAsync();
+
+                int rowCount = await TableRows.CountAsync();
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    var typeText = await RowTypeAlertByIndex(i).InnerTextAsync();
+
+                    if (!typeText.Trim().Equals(expectedType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new Exception($"Row {i} type mismatch. Expected: {expectedType}, Actual: {typeText}");
+                    }
+
+                    validated++;
+                }
+
+                if (await NextPageButton.IsDisabledAsync())
+                    break;
+
+                await ClickNextPageAsync();
+            }
+
+            if (validated != total)
+            {
+                throw new Exception($"Row count mismatch. Expected: {total}, Actual: {validated}");
+            }
+        }
     }
 }
