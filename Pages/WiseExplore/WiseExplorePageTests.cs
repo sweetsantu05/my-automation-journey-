@@ -499,36 +499,36 @@ namespace WiseUltimaTests.Pages.WiseExplore
 
             Assert.Equal(totalResults, verifiedRows);
         }
-//         public async Task ValidateSearchResultsWithPaginationAsync(string expectedText)
-// {
-//     while (true)
-//     {
-//         await WaitForPageStableAsync();
+        public async Task ValidateSearchResultsWithPaginationAsync(string expectedText)
+{
+    while (true)
+    {
+        await WaitForPageStableAsync();
 
-//         int rowCount = await TableRows.CountAsync();
+        int rowCount = await TableRows.CountAsync();
 
-//         for (int i = 0; i < rowCount; i++)
-//         {
-//             var row = TableRows.Nth(i);
+        for (int i = 0; i < rowCount; i++)
+        {
+            var row = TableRows.Nth(i);
 
-//             var values = await row
-//                 .Locator("div.mud-alert-message")
-//                 .AllTextContentsAsync();
+            var values = await row
+                .Locator("div.mud-alert-message")
+                .AllTextContentsAsync();
 
-//             bool found = values.Any(v =>
-//                 v.Contains(expectedText, StringComparison.OrdinalIgnoreCase));
+            bool found = values.Any(v =>
+                v.Contains(expectedText, StringComparison.OrdinalIgnoreCase));
 
-//             Assert.True(
-//                 found,
-//                 $"Row {i + 1} does not contain '{expectedText}'. Values: {string.Join(", ", values)}");
-//         }
+            Assert.True(
+                found,
+                $"Row {i + 1} does not contain '{expectedText}'. Values: {string.Join(", ", values)}");
+        }
 
-//         // if (await NextPageButton.IsDisabledAsync())
-//         //     break;
+        // if (await NextPageButton.IsDisabledAsync())
+        //     break;
 
-//         // await ClickNextPageAsync();
-//     }
-// }
+        // await ClickNextPageAsync();
+    }
+}
     }
 }
   
