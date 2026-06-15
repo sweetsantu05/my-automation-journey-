@@ -1,684 +1,534 @@
 ﻿using Microsoft.Playwright;
-using WiseUltimaTests.Pages.Login;
 using WiseUltimaTests.Pages.PreRequisites;
-using WiseUltimaTests.Pages.WiseExplore;
-using WiseUltimaTests.TestHooks;
-using WiseUltimaTests.Utils;
-using Xunit;
-using Allure.Xunit.Attributes;
+using System.Text.RegularExpressions;
+using System.Linq;
 
-namespace WiseUltimaTests.Tests.WiseExplore
+namespace WiseUltimaTests.Pages.WiseExplore
 {
-    [Collection("Playwright collection")]
-    [AllureSuite("Wise Explore Page Tests")]
-    public class WiseExplorePageTests : TestBaseFixture, IAsyncLifetime
+    public class WiseExplorePage : BasicSetup
     {
-        private LoginPage _loginPage = null!;
-        private WiseExplorePage _wiseExplorePage = null!;
-        private BasicSetup _basicSetup = null!;
-
-        public new async Task InitializeAsync()
+        public WiseExplorePage(IPage page) : base(page) { }
+        private ILocator WiseExplorecard => Page.GetByRole(AriaRole.Link, new() { Name = "Wise Explore" });
+        private ILocator FirstSystemRow =>Page.Locator("table tbody tr").First;
+        public async Task OpenAsync()
         {
-            await base.InitializeAsync();
+            await NavMenuToggleButton();
+            await WiseExplorecard.ClickAsync();
+            await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-explore"));
+            await WaitForDashboardStableAsync();
+        }
+        public async Task VerifyAtLeastOneResultAsync()
+        {
+            await Assertions.Expect(FirstSystemRow).ToBeVisibleAsync(new() { Timeout = 25000 });
+        }
+        public ILocator ResultCountText => Page.Locator("h6.mud-typography-subtitle1").Filter(new() { HasText = "Number of results" });
+        public ILocator TableRows => Page.Locator("table tbody tr");
 
-            _loginPage = new LoginPage(Page);
-            _wiseExplorePage = new WiseExplorePage(Page);
-            _basicSetup = new BasicSetup(Page);
+        public ILocator PaginationDropdown => Page.Locator(".mud-table-pagination select");
 
-            await _loginPage.NavigateToLoginPageAsync();
-            await _loginPage.ValidateValidLogin();
-            await _basicSetup.WaitForDashboardStableAsync();
-            await _wiseExplorePage.OpenAsync();
-            await _basicSetup.ClickRandomCriticalAppAsync();
+        public ILocator PaginationText => Page.Locator(".mud-table-pagination-caption");
+
+        public ILocator NextPageButton => Page.Locator("button[aria-label='Next page']");
+
+        public ILocator SearchBox => Page.GetByPlaceholder("Search for CID's");
+
+        public ILocator IdChips => Page.Locator("span.mud-chip-content");
+
+        public ILocator AlertMessages => Page.Locator("div.mud-alert-message");
+
+        public async Task<int> GetTotalResultsCountAsync()
+        {
+            var text = await ResultCountText.InnerTextAsync();
+            var match = Regex.Match(text, @"\d+");
+            return int.Parse(match.Value);
         }
 
-        [Fact]
-        [Trait("Category", "Smoke")]
-        [AllureOwner("TC_001_WiseExplore_Should_Load_Current")]
-        [AllureTag("Smoke")]
-        public async Task TC_001_WiseExplore_Should_Load_Current()
+        public async Task<int> GetCurrentRowCountAsync()
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
+            return await TableRows.CountAsync();
+        }
+        public async Task<string> GetPaginationTextAsync()
+        {
+            return await PaginationText.InnerTextAsync();
+        }
+        public async Task ClickNextPageAsync()
+        {
+            await Task.Delay(5000);
+            await NextPageButton.ClickAsync();
+            await WaitForPageStableAsync();
+        }
+        public async Task<string> GetRandomIdAsync()
+        {
+            var ids = await IdChips.AllTextContentsAsync();
+            var random = new Random();
+            return ids[random.Next(ids.Count)];
+        }
+        
+        public async Task SearchAsync(string value)
+        {
+            await SearchBox.FillAsync("");
+            await SearchBox.FillAsync(value);
+            await Page.Keyboard.PressAsync("Enter");
+            await WaitForPageStableAsync();
+        }
+        public async Task<List<string>> GetAllIdsFromTableAsync()
+        {
+            var ids = await IdChips.AllTextContentsAsync();
+            return ids.ToList();
+        }
+
+        public async Task<List<string>> GetAllAlertMessagesAsync()
+        {
+            var alerts = await AlertMessages.AllTextContentsAsync();
+            return alerts.ToList();
+        }
+        public async Task<int> GetTotalRowsAcrossPagesAsync()
+        {
+            int totalRows = 0;
+
+            while (true)
             {
+                totalRows += await GetCurrentRowCountAsync();
+
+                var nextDisabled = await NextPageButton.IsDisabledAsync();
+                if (nextDisabled)
+                    break;
+
+                await ClickNextPageAsync();
+            }
+
+            return totalRows;
+        }
+        public async Task SetPaginationTo100Async()
+        {
+            var dropdown = Page.Locator("div.mud-table-pagination")
+                            .Locator("div.mud-select")
+                            .First;
+
+            await dropdown.ClickAsync();
+
+            var optionsContainer = Page.Locator("div.mud-popover-open");
+
+            await optionsContainer.WaitForAsync(new() { Timeout = 5000 });
+
+            var option100 = optionsContainer
+                .Locator("div.mud-list-item")
+                .Filter(new() { HasTextString = "100" });
+
+            await option100.First.ClickAsync();
+
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        }
+
+        public ILocator CriticalCheckbox => Page.GetByText("Critical").Locator("..").Locator("input[type='checkbox']");
+        public ILocator TrippingCheckbox => Page.GetByText("Tripping").Locator("..").Locator("input[type='checkbox']");
+        public ILocator SafeCheckbox => Page.GetByText("Safe").Locator("..").Locator("input[type='checkbox']");
+
+        public ILocator AlertMessage => Page.Locator("div.mud-alert");
+
+        public ILocator RedAlerts => Page.Locator("div.mud-alert[style*='#FF4040']");
+        public ILocator YellowAlerts => Page.Locator("div.mud-alert[style*='#FFBF00']");
+        public ILocator GreenAlerts => Page.Locator("div.mud-alert[style*='#38b000']");
+
+        public async Task SelectCriticalAsync()
+        {
+            await CriticalCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
+        }
+
+        public async Task SelectTrippingAsync()
+        {
+            await TrippingCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
+        }
+
+        public async Task SelectSafeAsync()
+        {
+            await SafeCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
+        }
+
+        public async Task<int> GetAlertCountAsync()
+        {
+            return await AlertMessages.CountAsync();
+        }
+
+        public async Task<int> GetRedAlertCountAsync()
+        {
+            return await RedAlerts.CountAsync();
+        }
+
+        public async Task<int> GetYellowAlertCountAsync()
+        {
+            return await YellowAlerts.CountAsync();
+        }
+
+        public async Task<int> GetGreenAlertCountAsync()
+        {
+            return await GreenAlerts.CountAsync();
+        }
+        public async Task<int> GetTotalAlertsAcrossPagesAsync()
+        {
+            int total = 0;
+
+            while (true)
+            {
+                await WaitForPageStableAsync();
+
+                total += await AlertMessages.CountAsync();
+
+                if (await NextPageButton.IsDisabledAsync())
+                    break;
+
+                await NextPageButton.ClickAsync();
+            }
+
+            return total;
+        }
+
+        public ILocator AlertMessageInRow(ILocator row) =>
+            row.Locator("div.mud-alert-message");
+
+        public ILocator AlertContainerInRow(ILocator row) =>
+            row.Locator("div.mud-alert");
+
+            public async Task ValidateAllRowsHaveExpectedStatusAsync(string expectedText, string expectedColor)
+        {
+            while (true)
+            {
+                await WaitForPageStableAsync();
+
+                var rows = TableRows;
+                int count = await rows.CountAsync();
+
+                for (int i = 0; i < count; i++)
+                {
+                    var row = rows.Nth(i);
+
+                    var alertText = await AlertMessageInRow(row).InnerTextAsync();
+                    var alertStyle = await AlertContainerInRow(row).GetAttributeAsync("style");
+
+                    if (!alertText.Contains(expectedText))
+                        throw new Exception($"Row {i} does not contain {expectedText}");
+
+                    if (alertStyle == null || !alertStyle.Contains(expectedColor))
+                        throw new Exception($"Row {i} does not have color {expectedColor}");
+                }
+
+                if (await NextPageButton.IsDisabledAsync())
+                    break;
+
+                await NextPageButton.ClickAsync();
+            }
+        }
+        public async Task GoToFirstPageAsync()
+        {
+            var firstPageButton = Page.Locator("button[aria-label='First page']");
+
+            if (await firstPageButton.IsVisibleAsync())
+            {
+                await firstPageButton.ClickAsync();
+                await WaitForPageStableAsync();
+            }
+        }
+        public async Task ValidateAllRowsStatusWithPaginationAsync(string expectedText, string expectedColor)
+        {
+            int total = await GetTotalResultsCountAsync();
+
+            if (total == 0)
+            {
+                var noData = Page.GetByText("No Records Found");
+                await Assertions.Expect(noData).ToBeVisibleAsync();
+                return;
+            }
+
+            await SetPaginationTo100Async();
+            await WaitForPageStableAsync();
+
+            while (true)
+            {
+                await WaitForPageStableAsync();
+
+                var rows = Page.Locator("table tbody tr");
+
+                int count = await rows.CountAsync();
+
+                for (int i = 0; i < count; i++)
+                {
+                    var row = rows.Nth(i);
+
+                    var text = await row.Locator("div.mud-alert-message").InnerTextAsync();
+                    var style = await row.Locator("div.mud-alert").GetAttributeAsync("style");
+
+                    if (string.IsNullOrEmpty(text))
+                        continue;
+
+                    if (!text.Contains(expectedText))
+                        throw new Exception($"Row {i} text mismatch");
+
+                    if (style == null || !style.Contains(expectedColor))
+                        throw new Exception($"Row {i} color mismatch");
+                }
+
+                if (await NextPageButton.IsDisabledAsync())
+                    break;
+
+                await NextPageButton.ClickAsync();
+            }
+        }
+        public async Task<int> GetTotalRowsAcrossPagesOptimizedAsync()
+        {
+            int total = await GetTotalResultsCountAsync();
+
+            if (total == 0)
+            {
+                var noData = Page.GetByText("No Records Found");
+                await Assertions.Expect(noData).ToBeVisibleAsync();
+                return 0;
+            }
+
+            await SetPaginationTo100Async();
+            await WaitForPageStableAsync();
+
+            int count = 0;
+
+            while (true)
+            {
+                await WaitForPageStableAsync();
+
+                count += await IdChips.CountAsync();
+
+                if (await NextPageButton.IsDisabledAsync())
+                    break;
+
+                await NextPageButton.ClickAsync();
+            }
+
+            return count;
+        }
+
+                private ILocator RowTypeAlertByIndex(int index)
+        {
+            return Page.Locator("table tbody tr")
+                .Nth(index)
+                .Locator("div.mud-alert-message")
+                .Last;
+        }
                 
-                await _basicSetup.SwitchToCurrentAsync();
-                await _wiseExplorePage.VerifyAtLeastOneResultAsync();
 
-                Logger.Info(" TC_WISEEXPLORE_01: Wise Explore Current data validated");
-            }, nameof(TC_001_WiseExplore_Should_Load_Current));
+        public ILocator StorageCheckbox => Page.GetByText("Storage").Locator("..").Locator("input[type='checkbox']");
+        public ILocator DatabaseCheckbox => Page.GetByText("Database").Locator("..").Locator("input[type='checkbox']");
+        public ILocator NetworkCheckbox => Page.GetByText("Network").Locator("..").Locator("input[type='checkbox']");
+        public ILocator ServerCheckbox => Page.GetByText("Server").Locator("..").Locator("input[type='checkbox']");
+        public ILocator MiddlewareCheckbox => Page.GetByText("Middleware").Locator("..").Locator("input[type='checkbox']");
+        public ILocator BackupCheckbox => Page.GetByText("Backup").Locator("..").Locator("input[type='checkbox']");
+        public ILocator NoRecordsMessage => Page.Locator("text=No Records Found");
+
+
+        public async Task SelectStorageAsync()
+        {
+            await StorageCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
         }
 
-        [Fact]
-        [Trait("Category", "Smoke")]
-        [AllureOwner("TC_002_WiseExplore_Should_Load_W_Predict")]
-        [AllureTag("Smoke")]
-        public async Task TC_002_WiseExplore_Should_Load_W_Predict()
+        public async Task SelectDatabaseAsync()
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _basicSetup.SwitchToWPredictAsync();
-                await _wiseExplorePage.VerifyAtLeastOneResultAsync();
-
-                Logger.Info("TC_WISEEXPLORE_02: Wise Explore W-Predict data validated");
-            }, nameof(TC_002_WiseExplore_Should_Load_W_Predict));
+            await DatabaseCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
         }
 
-        [Fact]
-        [Trait("Category", "Smoke")]
-        [AllureOwner("TC_003_WiseExplore_Should_Load_M_Predict")]
-        [AllureTag("Smoke")]
-        public async Task TC_003_WiseExplore_Should_Load_M_Predict()
+        public async Task SelectNetworkAsync()
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _basicSetup.SwitchToMPredictAsync();
-                await _wiseExplorePage.VerifyAtLeastOneResultAsync();
-
-                Logger.Info("TC_WISEEXPLORE_03: Wise Explore M-Predict data validated");
-            }, nameof(TC_003_WiseExplore_Should_Load_M_Predict));
+            await NetworkCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
         }
 
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_004_Verify_Total_Result_Count_Visible")]
-        [AllureTag("Regression")]
-        public async Task TC_004_Verify_Total_Result_Count_Visible()
+        public async Task SelectServerAsync()
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                var text = await _wiseExplorePage.ResultCountText.InnerTextAsync();
-
-                Assert.Contains("Number of results", text);
-
-                Logger.Info("TC_004: Total result count is visible");
-            }, nameof(TC_004_Verify_Total_Result_Count_Visible));
+            await ServerCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
         }
 
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_005_Verify_Total_Count_Greater_Than_Zero")]
-        [AllureTag("Regression")]
-        public async Task TC_005_Verify_Total_Count_Greater_Than_Zero()
+        public async Task SelectMiddlewareAsync()
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                int total = await _wiseExplorePage.GetTotalResultsCountAsync();
-
-                Assert.True(total > 0);
-
-                Logger.Info($"TC_005: Total count is {total}");
-            }, nameof(TC_005_Verify_Total_Count_Greater_Than_Zero));
+            await MiddlewareCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
         }
 
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_006_Verify_Default_Row_Count")]
-        [AllureTag("Regression")]
-        public async Task TC_006_Verify_Default_Row_Count()
+        public async Task SelectBackupAsync()
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
-
-                Assert.Equal(10, rows);
-
-                Logger.Info("TC_006: Default row count is 10");
-            }, nameof(TC_006_Verify_Default_Row_Count));
+            await BackupCheckbox.CheckAsync();
+            await WaitForPageStableAsync();
         }
 
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_007_Set_Pagination_To_100_and verify")]
-        [AllureTag("Regression")]
-        public async Task TC_007_Set_Pagination_To_100()
+        public async Task ValidateAllRowsTypeWithPaginationAsync(string expectedType)
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
+            if (await NoRecordsMessage.IsVisibleAsync())
             {
-                await _wiseExplorePage.SetPaginationTo100Async();
+                return;
+            }
+            
+            int total = await GetTotalResultsCountAsync();
 
-                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
+            if (total == 0)
+            {
+                var noData = Page.GetByText("No Records Found");
+                await Assertions.Expect(noData).ToBeVisibleAsync();
+                return;
+            }
 
-                var text = await _wiseExplorePage.GetPaginationTextAsync();
+            await SetPaginationTo100Async();
+            await WaitForPageStableAsync();
 
+            int validated = 0;
 
-                Assert.True(rows <= 100);
+            while (true)
+            {
+                await WaitForPageStableAsync();
 
-                Logger.Info("TC_007: Pagination set to 100");
-            }, nameof(TC_007_Set_Pagination_To_100));
+                int rowCount = await TableRows.CountAsync();
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    var typeText = await RowTypeAlertByIndex(i).InnerTextAsync();
+
+                    if (!typeText.Trim().Equals(expectedType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new Exception($"Row {i} type mismatch. Expected: {expectedType}, Actual: {typeText}");
+                    }
+
+                    validated++;
+                }
+
+                if (await NextPageButton.IsDisabledAsync())
+                    break;
+
+                await ClickNextPageAsync();
+            }
+
+            if (validated != total)
+            {
+                throw new Exception($"Row count mismatch. Expected: {total}, Actual: {validated}");
+            }
         }
 
-        // [Fact]
-        // [Trait("Category", "Regression")]
-        // [AllureOwner("TC_008_Verify_Pagination_Text")]
-        // [AllureTag("Regression")]
-        // public async Task TC_008_Verify_Pagination_Text()
-        // {
-        //     await _attachmentHelper.RunWithTracingAsync(async () =>
-        //     {
-        //         await _wiseExplorePage.SetPaginationTo100Async();
-
-        //         var text = await _wiseExplorePage.GetPaginationTextAsync();
-
-        //         Assert.Contains("of", text);
-
-        //         Logger.Info($"TC_008: Pagination text = {text}");
-        //     }, nameof(TC_008_Verify_Pagination_Text));
-        // }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_009_Verify_Next_Page_Navigation")]
-        [AllureTag("Regression")]
-        public async Task TC_009_Verify_Next_Page_Navigation()
+        public async Task SelectEnvironmentAsync(string environment)
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                var firstPageIds = await _wiseExplorePage.GetAllIdsFromTableAsync();
+            var checkbox = Page
+                .Locator("div.check")
+                .Filter(new() { HasText = environment })
+                .Locator("input.mud-checkbox-input");
 
-                await _wiseExplorePage.ClickNextPageAsync();
+            await checkbox.ClickAsync();
 
-                var secondPageIds = await _wiseExplorePage.GetAllIdsFromTableAsync();
-
-                Assert.NotEqual(firstPageIds.First(), secondPageIds.First());
-
-                Logger.Info("TC_009: Pagination next page works");
-            }, nameof(TC_009_Verify_Next_Page_Navigation));
+            await Page.WaitForTimeoutAsync(2000);
         }
 
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_010_Verify_Total_Rows_Match_Count")]
-        [AllureTag("Regression")]
-        public async Task TC_010_Verify_Total_Rows_Match_Count()
+        public async Task<int> GetTotalResultsCount()
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                int expected = await _wiseExplorePage.GetTotalResultsCountAsync();
+            var text = await Page
+                .Locator("h6.mud-typography")
+                .Filter(new() { HasText = "Number of results:" })
+                .InnerTextAsync();
 
-                await _wiseExplorePage.SetPaginationTo100Async();
+            var countText = text.Replace("Number of results:", "").Trim();
 
-                int actual = await _wiseExplorePage.GetTotalRowsAcrossPagesAsync();
-
-                Assert.Equal(expected, actual);
-
-                Logger.Info($"TC_010: Total rows matched {actual}");
-            }, nameof(TC_010_Verify_Total_Rows_Match_Count));
+            return int.Parse(countText);
         }
 
-        // [Fact]
-        // [Trait("Category", "Regression")]
-        // [AllureOwner("TC_011_Search_With_Random_ID")]
-        // [AllureTag("Regression")]
-        // public async Task TC_011_Search_With_Random_ID()
-        // {
-        //     await _attachmentHelper.RunWithTracingAsync(async () =>
-        //     {
-        //         await _wiseExplorePage.SetPaginationTo100Async();
-
-        //         var randomId = await _wiseExplorePage.GetRandomIdAsync();
-
-        //         await _wiseExplorePage.SearchAsync(randomId);
-
-        //         int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
-
-        //         Assert.Equal(1, rows);
-
-        //         Logger.Info($"TC_011: Search success for ID {randomId}");
-        //     }, nameof(TC_011_Search_With_Random_ID));
-        // }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_011_Search_and_Validate_ID")]
-        [AllureTag("Regression")]
-        public async Task TC_011_Search_and_Validate_ID()
+        public async Task ValidateAllRowsEnvironmentWithPaginationAsync(string expectedEnvironment)
         {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
+            int totalResults = await GetTotalResultsCount();
+
+            // Handle No Records Found
+            if (totalResults == 0)
             {
-                var randomId = await _wiseExplorePage.GetRandomIdAsync();
+                var noRecords = await Page
+                    .Locator("h6.mud-typography")
+                    .Filter(new() { HasText = "No Records Found" })
+                    .IsVisibleAsync();
 
-                await _wiseExplorePage.SearchAsync(randomId);
+                Assert.True(noRecords,
+                    "Expected No Records Found message.");
 
-                var ids = await _wiseExplorePage.GetAllIdsFromTableAsync();
+                return;
+            }
 
-                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
+            await SetPaginationTo100Async();
 
-                Assert.Equal(1, rows);
+            int verifiedRows = 0;
 
-                Assert.Single(ids);
-                Assert.Equal(randomId, ids.First());
+            while (true)
+            {
+                await Page.WaitForTimeoutAsync(2000);
 
-                Logger.Info("TC_011: Search result matches ID");
-            }, nameof(TC_011_Search_and_Validate_ID));
+                var rows = await Page.Locator("tbody tr").CountAsync();
+
+                for (int i = 0; i < rows; i++)
+                {
+                    // FIRST alert only
+                    var environmentText = await Page
+                        .Locator("tbody tr")
+                        .Nth(i)
+                        .Locator("div[role='alert']")
+                        .First
+                        .InnerTextAsync();
+
+                    Assert.True(
+                        environmentText.Trim()
+                            .Equals(expectedEnvironment,
+                            StringComparison.OrdinalIgnoreCase),
+
+                        $"Row {i + 1} mismatch. " +
+                        $"Expected: {expectedEnvironment}, " +
+                        $"Actual: {environmentText}"
+                    );
+
+                    verifiedRows++;
+                }
+
+                var nextButton = Page.GetByRole(AriaRole.Button, new() { Name = "Next page" });
+
+                if (await nextButton.IsDisabledAsync())
+                    break;
+
+                await nextButton.ClickAsync();
+
+                await Page.WaitForTimeoutAsync(2000);
+            }
+
+            Assert.Equal(totalResults, verifiedRows);
         }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_013_Search_Production")]
-        [AllureTag("Regression")]
-        public async Task TC_013_Search_Production()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SearchAsync("PRD");
-
-                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
-
-                Assert.True(rows > 0);
-
-                Logger.Info("TC_013: Production search returned results");
-            }, nameof(TC_013_Search_Production));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_014_Validate_Production_Results")]
-        [AllureTag("Regression")]
-        public async Task TC_014_Validate_Production_Results()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SearchAsync("PRD");
-
-                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
-
-                Assert.True(rows > 0);
-
-                var alerts = await _wiseExplorePage.GetAllAlertMessagesAsync();
-
-                Assert.All(alerts, a => Assert.Contains("PRD", a));
-
-                Logger.Info("TC_014: All rows contain Production");
-            }, nameof(TC_014_Validate_Production_Results));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_015_Search_Server")]
-        [AllureTag("Regression")]
-        public async Task TC_015_Search_Server()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SearchAsync("Ser");
-
-                // await _wiseExplorePage.ValidateSearchResultsWithPaginationAsync("Ser");
-
-                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
-
-                Assert.True(rows > 0);
-
-                Logger.Info("TC_015: Server search returned results");
-            }, nameof(TC_015_Search_Server));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_016_Validate_Server_Results")]
-        [AllureTag("Regression")]
-        public async Task TC_016_Validate_Server_Results()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SearchAsync("Server");
-
-                var alerts = await _wiseExplorePage.GetAllAlertMessagesAsync();
-
-                Assert.All(alerts, a => Assert.Contains("Server", a));
-
-                Logger.Info("TC_016: All rows contain Server");
-            }, nameof(TC_016_Validate_Server_Results));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_017_Invalid_Search")]
-        [AllureTag("Regression")]
-        public async Task TC_017_Invalid_Search()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SearchAsync("invalid123");
-
-                int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
-
-                Assert.True(rows == 0);
-
-                Logger.Info("TC_017: Invalid search returned no results");
-            }, nameof(TC_017_Invalid_Search));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_018_Critical_Filter_Count_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_018_Critical_Filter_Count_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectCriticalAsync();
-
-                int expected = await _wiseExplorePage.GetTotalResultsCountAsync();
-                int actual = await _wiseExplorePage.GetTotalRowsAcrossPagesOptimizedAsync();
-
-                Assert.Equal(expected, actual);
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-                Logger.Info($"TC_018: Critical count matched {actual}");
-
-            }, nameof(TC_018_Critical_Filter_Count_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_019_Critical_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_019_Critical_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectCriticalAsync();
-
-                await _wiseExplorePage.ValidateAllRowsStatusWithPaginationAsync("Critical", "#FF4040");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-                Logger.Info("TC_019: All rows are Critical with RED color");
-
-            }, nameof(TC_019_Critical_Filter_Verification));
-        }
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_020_Tripping_Filter_Count_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_020_Tripping_Filter_Count_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectTrippingAsync();
-
-                int expected = await _wiseExplorePage.GetTotalResultsCountAsync();
-                int actual = await _wiseExplorePage.GetTotalRowsAcrossPagesOptimizedAsync();
-
-                Assert.Equal(expected, actual);
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-                Logger.Info($"TC_020: Tripping count matched {actual}");
-
-            }, nameof(TC_020_Tripping_Filter_Count_Verification));
-        }   
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_021_Tripping_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_021_Tripping_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectTrippingAsync();
-
-                await _wiseExplorePage.ValidateAllRowsStatusWithPaginationAsync("Tripping", "#FFBF00");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-                Logger.Info("TC_021: All rows are Tripping with YELLOW color");
-
-            }, nameof(TC_021_Tripping_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_022")]
-        [AllureTag("Regression")]
-        public async Task TC_022_Safe_Filter_Count_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectSafeAsync();
-
-                int expected = await _wiseExplorePage.GetTotalResultsCountAsync();
-                int actual = await _wiseExplorePage.GetTotalRowsAcrossPagesOptimizedAsync();
-
-                Assert.Equal(expected, actual);
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-                Logger.Info($"TC_022: Safe count matched {actual}");
-
-            }, nameof(TC_022_Safe_Filter_Count_Verification));
-        }
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_023_Safe_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_023_Safe_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectSafeAsync();
-
-                await _wiseExplorePage.ValidateAllRowsStatusWithPaginationAsync("Safe", "#38b000");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-                Logger.Info("TC_023: All rows are Safe with GREEN color");
-
-            }, nameof(TC_023_Safe_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_025_Storage_Type_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_025_Storage_Type_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectStorageAsync();
-
-                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Storage");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_025_Storage_Type_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_026_Database_Type_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_026_Database_Type_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectDatabaseAsync();
-
-                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Database");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_026_Database_Type_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_027_Network_Type_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_027_Network_Type_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectNetworkAsync();
-
-                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Network");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_027_Network_Type_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_028_Server_Type_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_028_Server_Type_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectServerAsync();
-
-                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Server");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_028_Server_Type_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_029_Middleware_Type_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_029_Middleware_Type_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectMiddlewareAsync();
-
-                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Middleware");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_029_Middleware_Type_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_030_Backup_Type_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_030_Backup_Type_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectBackupAsync();
-
-                await _wiseExplorePage.ValidateAllRowsTypeWithPaginationAsync("Backup");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_030_Backup_Type_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_031_Development_Environment_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_031_Development_Environment_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectEnvironmentAsync("Development");
-
-                await _wiseExplorePage
-                    .ValidateAllRowsEnvironmentWithPaginationAsync("Development");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_031_Development_Environment_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_032_Test_Environment_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_032_Test_Environment_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectEnvironmentAsync("Test");
-
-                await _wiseExplorePage
-                    .ValidateAllRowsEnvironmentWithPaginationAsync("Test");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_032_Test_Environment_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_033_Training_Environment_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_033_Training_Environment_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectEnvironmentAsync("Training");
-
-                await _wiseExplorePage
-                    .ValidateAllRowsEnvironmentWithPaginationAsync("Training");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_033_Training_Environment_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_034_Staging_Environment_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_034_Staging_Environment_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectEnvironmentAsync("Staging");
-
-                await _wiseExplorePage
-                    .ValidateAllRowsEnvironmentWithPaginationAsync("Staging");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_034_Staging_Environment_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_035_Production_Environment_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_035_Production_Environment_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectEnvironmentAsync("Production");
-
-                await _wiseExplorePage
-                    .ValidateAllRowsEnvironmentWithPaginationAsync("Production");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_035_Production_Environment_Filter_Verification));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_036_Sandbox_Environment_Filter_Verification")]
-        [AllureTag("Regression")]
-        public async Task TC_036_Sandbox_Environment_Filter_Verification()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseExplorePage.SelectEnvironmentAsync("Sandbox");
-
-                await _wiseExplorePage
-                    .ValidateAllRowsEnvironmentWithPaginationAsync("Sandbox");
-
-                await _wiseExplorePage.GoToFirstPageAsync();
-
-            }, nameof(TC_036_Sandbox_Environment_Filter_Verification));
-        }
+//         public async Task ValidateSearchResultsWithPaginationAsync(string expectedText)
+// {
+//     while (true)
+//     {
+//         await WaitForPageStableAsync();
+
+//         int rowCount = await TableRows.CountAsync();
+
+//         for (int i = 0; i < rowCount; i++)
+//         {
+//             var row = TableRows.Nth(i);
+
+//             var values = await row
+//                 .Locator("div.mud-alert-message")
+//                 .AllTextContentsAsync();
+
+//             bool found = values.Any(v =>
+//                 v.Contains(expectedText, StringComparison.OrdinalIgnoreCase));
+
+//             Assert.True(
+//                 found,
+//                 $"Row {i + 1} does not contain '{expectedText}'. Values: {string.Join(", ", values)}");
+//         }
+
+//         // if (await NextPageButton.IsDisabledAsync())
+//         //     break;
+
+//         // await ClickNextPageAsync();
+//     }
+// }
     }
 }
-
-
-
+  

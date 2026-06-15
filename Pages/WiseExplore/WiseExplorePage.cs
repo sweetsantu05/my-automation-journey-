@@ -63,6 +63,7 @@ namespace WiseUltimaTests.Pages.WiseExplore
             var random = new Random();
             return ids[random.Next(ids.Count)];
         }
+        
         public async Task SearchAsync(string value)
         {
             await SearchBox.FillAsync("");
@@ -410,5 +411,124 @@ namespace WiseUltimaTests.Pages.WiseExplore
                 throw new Exception($"Row count mismatch. Expected: {total}, Actual: {validated}");
             }
         }
+
+        public async Task SelectEnvironmentAsync(string environment)
+        {
+            var checkbox = Page
+                .Locator("div.check")
+                .Filter(new() { HasText = environment })
+                .Locator("input.mud-checkbox-input");
+
+            await checkbox.ClickAsync();
+
+            await Page.WaitForTimeoutAsync(2000);
+        }
+
+        public async Task<int> GetTotalResultsCount()
+        {
+            var text = await Page
+                .Locator("h6.mud-typography")
+                .Filter(new() { HasText = "Number of results:" })
+                .InnerTextAsync();
+
+            var countText = text.Replace("Number of results:", "").Trim();
+
+            return int.Parse(countText);
+        }
+
+        public async Task ValidateAllRowsEnvironmentWithPaginationAsync(string expectedEnvironment)
+        {
+            int totalResults = await GetTotalResultsCount();
+
+            // Handle No Records Found
+            if (totalResults == 0)
+            {
+                var noRecords = await Page
+                    .Locator("h6.mud-typography")
+                    .Filter(new() { HasText = "No Records Found" })
+                    .IsVisibleAsync();
+
+                Assert.True(noRecords,
+                    "Expected No Records Found message.");
+
+                return;
+            }
+
+            await SetPaginationTo100Async();
+
+            int verifiedRows = 0;
+
+            while (true)
+            {
+                await Page.WaitForTimeoutAsync(2000);
+
+                var rows = await Page.Locator("tbody tr").CountAsync();
+
+                for (int i = 0; i < rows; i++)
+                {
+                    // FIRST alert only
+                    var environmentText = await Page
+                        .Locator("tbody tr")
+                        .Nth(i)
+                        .Locator("div[role='alert']")
+                        .First
+                        .InnerTextAsync();
+
+                    Assert.True(
+                        environmentText.Trim()
+                            .Equals(expectedEnvironment,
+                            StringComparison.OrdinalIgnoreCase),
+
+                        $"Row {i + 1} mismatch. " +
+                        $"Expected: {expectedEnvironment}, " +
+                        $"Actual: {environmentText}"
+                    );
+
+                    verifiedRows++;
+                }
+
+                var nextButton = Page.GetByRole(AriaRole.Button, new() { Name = "Next page" });
+
+                if (await nextButton.IsDisabledAsync())
+                    break;
+
+                await nextButton.ClickAsync();
+
+                await Page.WaitForTimeoutAsync(2000);
+            }
+
+            Assert.Equal(totalResults, verifiedRows);
+        }
+//         public async Task ValidateSearchResultsWithPaginationAsync(string expectedText)
+// {
+//     while (true)
+//     {
+//         await WaitForPageStableAsync();
+
+//         int rowCount = await TableRows.CountAsync();
+
+//         for (int i = 0; i < rowCount; i++)
+//         {
+//             var row = TableRows.Nth(i);
+
+//             var values = await row
+//                 .Locator("div.mud-alert-message")
+//                 .AllTextContentsAsync();
+
+//             bool found = values.Any(v =>
+//                 v.Contains(expectedText, StringComparison.OrdinalIgnoreCase));
+
+//             Assert.True(
+//                 found,
+//                 $"Row {i + 1} does not contain '{expectedText}'. Values: {string.Join(", ", values)}");
+//         }
+
+//         // if (await NextPageButton.IsDisabledAsync())
+//         //     break;
+
+//         // await ClickNextPageAsync();
+//     }
+// }
     }
 }
+  
