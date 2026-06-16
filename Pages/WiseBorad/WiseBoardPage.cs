@@ -112,15 +112,15 @@ namespace WiseUltimaTests.Pages.WiseBoard
 
             Assert.Equal(expectedCount, actualCount);
 
-            await Page.GetByRole(AriaRole.Button, new() { Name = "close" }).ClickAsync();
+            // await Page.GetByRole(AriaRole.Button, new() { Name = "close" }).ClickAsync();
         } 
 
         private ILocator GetCardSection(CardType cardType)
         {
             return Page
                 .GetByText(cardType.ToString(), new() { Exact = true })
-                .Locator("..")   // go up
-                .Locator("..");  // reach card container
+                .Locator("..")  
+                .Locator("..");  
         }
 
         private ILocator GetStatusChip(CardType card, StatusType status, int index)

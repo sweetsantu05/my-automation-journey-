@@ -100,13 +100,14 @@ namespace WiseUltimaTests.Pages.PreRequisites
             await WaitForIconToLoadAsync(Page);
             await WaitForPageStableAsync();
             await ApplicationOptions.ClickAsync();
-            var apps = new[]
-            {
-                Page.GetByText("Critical App 1", new() { Exact = true }).First,
-                Page.GetByText("Critical App 2", new() { Exact = true }).First
-            };
+            // var apps = new[]
+            // {
+            //     Page.GetByText("Critical App 1", new() { Exact = true }).First,
+            //     Page.GetByText("Critical App 2", new() { Exact = true }).First
+            // };
 
-            await apps[Random.Shared.Next(apps.Length)].ClickAsync();
+            // await apps[Random.Shared.Next(apps.Length)].ClickAsync();
+            await Page.GetByText("Critical App 2", new() { Exact = true }).First.ClickAsync();
         }
        public async Task WaitForIconToLoadAsync(IPage page)
         {

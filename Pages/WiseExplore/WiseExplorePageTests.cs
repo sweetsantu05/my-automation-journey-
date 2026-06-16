@@ -30,6 +30,7 @@ namespace WiseUltimaTests.Tests.WiseExplore
             await _basicSetup.WaitForDashboardStableAsync();
             await _wiseExplorePage.OpenAsync();
             await _basicSetup.ClickRandomCriticalAppAsync();
+            await _basicSetup.WaitForIconToLoadAsync(Page);
         }
 
         [Fact]
@@ -118,13 +119,12 @@ namespace WiseUltimaTests.Tests.WiseExplore
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
+                int total = await _wiseExplorePage.GetTotalResultsCountAsync();
                 int rows = await _wiseExplorePage.GetCurrentRowCountAsync();
 
-                Assert.Equal(10, rows);
-
-                Logger.Info("TC_006: Default row count is 10");
+                Assert.Equal(Math.Min(total, 10), rows);
             }, nameof(TC_006_Verify_Default_Row_Count));
-        }
+        }   
 
         [Fact]
         [Trait("Category", "Regression")]

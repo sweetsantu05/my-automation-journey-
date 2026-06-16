@@ -21,7 +21,7 @@ namespace WiseUltimaTests.Utils
                 Directory.CreateDirectory(ScreenshotDir);
                 Console.WriteLine($"[ScreenshotHelper] Folder ensured: {ScreenshotDir}");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine($"[ScreenshotHelper] FAILED to create folder: {ex.Message}");
                 throw;

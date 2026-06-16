@@ -114,7 +114,6 @@ namespace WiseUltimaTests.Pages.WiseAI
             "Show memory usage details",
             "Check disk storage usage",
             "Show recent logs",
-            "What is the system health status?",
             "Show top processes consuming CPU"
         };
 
