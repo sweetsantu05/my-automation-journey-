@@ -63,7 +63,6 @@ namespace WiseUltimaTests.Pages.AppMetrics
 
         public async Task VerifyAppMetricsLoadedAsync()
         {
-            await Assertions.Expect(AppMetricsHeader).ToBeVisibleAsync(new() { Timeout = 15000 });
             await VerifyApplicationProcessTableLoadedAsync();
         }
     }

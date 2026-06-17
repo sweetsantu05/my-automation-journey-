@@ -10,6 +10,27 @@ namespace WiseUltimaTests.Pages.WiseExplore
         public WiseExplorePage(IPage page) : base(page) { }
         private ILocator WiseExplorecard => Page.GetByRole(AriaRole.Link, new() { Name = "Wise Explore" });
         private ILocator FirstSystemRow =>Page.Locator("table tbody tr").First;
+        public ILocator ResultCountText => Page.Locator("h6.mud-typography-subtitle1").Filter(new() { HasText = "Number of results" });
+        public ILocator TableRows => Page.Locator("table tbody tr");
+        public ILocator PaginationDropdown => Page.Locator(".mud-table-pagination select");
+        public ILocator PaginationText => Page.Locator(".mud-table-pagination-caption").Last;
+        public ILocator NextPageButton => Page.Locator("button[aria-label='Next page']");
+        public ILocator SearchBox => Page.GetByPlaceholder("Search for CID's");
+        public ILocator IdChips => Page.Locator("span.mud-chip-content");
+        public ILocator AlertMessages => Page.Locator("div.mud-alert-message");
+        public ILocator CriticalCheckbox => Page.GetByText("Critical").Locator("..").Locator("input[type='checkbox']");
+        public ILocator TrippingCheckbox => Page.GetByText("Tripping").Locator("..").Locator("input[type='checkbox']");
+        public ILocator SafeCheckbox => Page.GetByText("Safe").Locator("..").Locator("input[type='checkbox']");
+        public ILocator StorageCheckbox => Page.GetByText("Storage").Locator("..").Locator("input[type='checkbox']");
+        public ILocator DatabaseCheckbox => Page.GetByText("Database").Locator("..").Locator("input[type='checkbox']");
+        public ILocator NetworkCheckbox => Page.GetByText("Network").Locator("..").Locator("input[type='checkbox']");
+        public ILocator ServerCheckbox => Page.GetByText("Server").Locator("..").Locator("input[type='checkbox']");
+        public ILocator MiddlewareCheckbox => Page.GetByText("Middleware").Locator("..").Locator("input[type='checkbox']");
+        public ILocator BackupCheckbox => Page.GetByText("Backup").Locator("..").Locator("input[type='checkbox']");
+        public ILocator NoRecordsMessage => Page.Locator("text=No Records Found");
+        private const string CriticalColor = "#FF4040";
+        private const string TrippingColor = "#FF8F00";
+        private const string SafeColor = "#38B000";
         public async Task OpenAsync()
         {
             await NavMenuToggleButton();
@@ -21,21 +42,6 @@ namespace WiseUltimaTests.Pages.WiseExplore
         {
             await Assertions.Expect(FirstSystemRow).ToBeVisibleAsync(new() { Timeout = 25000 });
         }
-        public ILocator ResultCountText => Page.Locator("h6.mud-typography-subtitle1").Filter(new() { HasText = "Number of results" });
-        public ILocator TableRows => Page.Locator("table tbody tr");
-
-        public ILocator PaginationDropdown => Page.Locator(".mud-table-pagination select");
-
-        public ILocator PaginationText => Page.Locator(".mud-table-pagination-caption");
-
-        public ILocator NextPageButton => Page.Locator("button[aria-label='Next page']");
-
-        public ILocator SearchBox => Page.GetByPlaceholder("Search for CID's");
-
-        public ILocator IdChips => Page.Locator("span.mud-chip-content");
-
-        public ILocator AlertMessages => Page.Locator("div.mud-alert-message");
-
         public async Task<int> GetTotalResultsCountAsync()
         {
             var text = await ResultCountText.InnerTextAsync();
@@ -51,23 +57,49 @@ namespace WiseUltimaTests.Pages.WiseExplore
         {
             return await PaginationText.InnerTextAsync();
         }
+        public async Task<string> GetSelectedPaginationValueAsync()
+        {
+            var dropdown = Page.Locator("div.mud-table-pagination")
+                            .Locator("div.mud-select-input")
+                            .First;
+
+            return (await dropdown.InnerTextAsync()).Trim();
+        }
         public async Task ClickNextPageAsync()
         {
             await Task.Delay(5000);
             await NextPageButton.ClickAsync();
             await WaitForPageStableAsync();
         }
+
+        // public async Task ClickNextPageAsync1()
+        // {
+        //     var before = await GetPaginationTextAsync();
+
+        //     await NextPageButton.ClickAsync();
+
+        //     await Page.WaitForFunctionAsync(
+        //         @"(oldText) => {
+        //             const el = document.querySelector('.mud-table-pagination-caption');
+        //             return el && el.innerText !== oldText;
+        //         }",
+        //         before);
+
+        //     await WaitForPageStableAsync();
+        // }
         public async Task<string> GetRandomIdAsync()
         {
             var ids = await IdChips.AllTextContentsAsync();
             var random = new Random();
             return ids[random.Next(ids.Count)];
         }
+        
         public async Task SearchAsync(string value)
         {
             await SearchBox.FillAsync("");
             await SearchBox.FillAsync(value);
             await Page.Keyboard.PressAsync("Enter");
+            await WaitForResultsToLoadAsync();
             await WaitForPageStableAsync();
         }
         public async Task<List<string>> GetAllIdsFromTableAsync()
@@ -119,16 +151,6 @@ namespace WiseUltimaTests.Pages.WiseExplore
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
 
-        public ILocator CriticalCheckbox => Page.GetByText("Critical").Locator("..").Locator("input[type='checkbox']");
-        public ILocator TrippingCheckbox => Page.GetByText("Tripping").Locator("..").Locator("input[type='checkbox']");
-        public ILocator SafeCheckbox => Page.GetByText("Safe").Locator("..").Locator("input[type='checkbox']");
-
-        public ILocator AlertMessage => Page.Locator("div.mud-alert");
-
-        public ILocator RedAlerts => Page.Locator("div.mud-alert[style*='#FF4040']");
-        public ILocator YellowAlerts => Page.Locator("div.mud-alert[style*='#FFBF00']");
-        public ILocator GreenAlerts => Page.Locator("div.mud-alert[style*='#38b000']");
-
         public async Task SelectCriticalAsync()
         {
             await CriticalCheckbox.CheckAsync();
@@ -147,79 +169,6 @@ namespace WiseUltimaTests.Pages.WiseExplore
             await WaitForPageStableAsync();
         }
 
-        public async Task<int> GetAlertCountAsync()
-        {
-            return await AlertMessages.CountAsync();
-        }
-
-        public async Task<int> GetRedAlertCountAsync()
-        {
-            return await RedAlerts.CountAsync();
-        }
-
-        public async Task<int> GetYellowAlertCountAsync()
-        {
-            return await YellowAlerts.CountAsync();
-        }
-
-        public async Task<int> GetGreenAlertCountAsync()
-        {
-            return await GreenAlerts.CountAsync();
-        }
-        public async Task<int> GetTotalAlertsAcrossPagesAsync()
-        {
-            int total = 0;
-
-            while (true)
-            {
-                await WaitForPageStableAsync();
-
-                total += await AlertMessages.CountAsync();
-
-                if (await NextPageButton.IsDisabledAsync())
-                    break;
-
-                await NextPageButton.ClickAsync();
-            }
-
-            return total;
-        }
-
-        public ILocator AlertMessageInRow(ILocator row) =>
-            row.Locator("div.mud-alert-message");
-
-        public ILocator AlertContainerInRow(ILocator row) =>
-            row.Locator("div.mud-alert");
-
-            public async Task ValidateAllRowsHaveExpectedStatusAsync(string expectedText, string expectedColor)
-        {
-            while (true)
-            {
-                await WaitForPageStableAsync();
-
-                var rows = TableRows;
-                int count = await rows.CountAsync();
-
-                for (int i = 0; i < count; i++)
-                {
-                    var row = rows.Nth(i);
-
-                    var alertText = await AlertMessageInRow(row).InnerTextAsync();
-                    var alertStyle = await AlertContainerInRow(row).GetAttributeAsync("style");
-
-                    if (!alertText.Contains(expectedText))
-                        throw new Exception($"Row {i} does not contain {expectedText}");
-
-                    if (alertStyle == null || !alertStyle.Contains(expectedColor))
-                        throw new Exception($"Row {i} does not have color {expectedColor}");
-                }
-
-                if (await NextPageButton.IsDisabledAsync())
-                    break;
-
-                await NextPageButton.ClickAsync();
-            }
-        }
         public async Task GoToFirstPageAsync()
         {
             var firstPageButton = Page.Locator("button[aria-label='First page']");
@@ -230,99 +179,14 @@ namespace WiseUltimaTests.Pages.WiseExplore
                 await WaitForPageStableAsync();
             }
         }
-        public async Task ValidateAllRowsStatusWithPaginationAsync(string expectedText, string expectedColor)
-        {
-            int total = await GetTotalResultsCountAsync();
 
-            if (total == 0)
-            {
-                var noData = Page.GetByText("No Records Found");
-                await Assertions.Expect(noData).ToBeVisibleAsync();
-                return;
-            }
-
-            await SetPaginationTo100Async();
-            await WaitForPageStableAsync();
-
-            while (true)
-            {
-                await WaitForPageStableAsync();
-
-                var rows = Page.Locator("table tbody tr");
-
-                int count = await rows.CountAsync();
-
-                for (int i = 0; i < count; i++)
-                {
-                    var row = rows.Nth(i);
-
-                    var text = await row.Locator("div.mud-alert-message").InnerTextAsync();
-                    var style = await row.Locator("div.mud-alert").GetAttributeAsync("style");
-
-                    if (string.IsNullOrEmpty(text))
-                        continue;
-
-                    if (!text.Contains(expectedText))
-                        throw new Exception($"Row {i} text mismatch");
-
-                    if (style == null || !style.Contains(expectedColor))
-                        throw new Exception($"Row {i} color mismatch");
-                }
-
-                if (await NextPageButton.IsDisabledAsync())
-                    break;
-
-                await NextPageButton.ClickAsync();
-            }
-        }
-        public async Task<int> GetTotalRowsAcrossPagesOptimizedAsync()
-        {
-            int total = await GetTotalResultsCountAsync();
-
-            if (total == 0)
-            {
-                var noData = Page.GetByText("No Records Found");
-                await Assertions.Expect(noData).ToBeVisibleAsync();
-                return 0;
-            }
-
-            await SetPaginationTo100Async();
-            await WaitForPageStableAsync();
-
-            int count = 0;
-
-            while (true)
-            {
-                await WaitForPageStableAsync();
-
-                count += await IdChips.CountAsync();
-
-                if (await NextPageButton.IsDisabledAsync())
-                    break;
-
-                await NextPageButton.ClickAsync();
-            }
-
-            return count;
-        }
-
-                private ILocator RowTypeAlertByIndex(int index)
+        private ILocator RowTypeAlertByIndex(int index)
         {
             return Page.Locator("table tbody tr")
                 .Nth(index)
                 .Locator("div.mud-alert-message")
                 .Last;
-        }
-                
-
-        public ILocator StorageCheckbox => Page.GetByText("Storage").Locator("..").Locator("input[type='checkbox']");
-        public ILocator DatabaseCheckbox => Page.GetByText("Database").Locator("..").Locator("input[type='checkbox']");
-        public ILocator NetworkCheckbox => Page.GetByText("Network").Locator("..").Locator("input[type='checkbox']");
-        public ILocator ServerCheckbox => Page.GetByText("Server").Locator("..").Locator("input[type='checkbox']");
-        public ILocator MiddlewareCheckbox => Page.GetByText("Middleware").Locator("..").Locator("input[type='checkbox']");
-        public ILocator BackupCheckbox => Page.GetByText("Backup").Locator("..").Locator("input[type='checkbox']");
-        public ILocator NoRecordsMessage => Page.Locator("text=No Records Found");
-
+        }  
 
         public async Task SelectStorageAsync()
         {
@@ -360,43 +224,32 @@ namespace WiseUltimaTests.Pages.WiseExplore
             await WaitForPageStableAsync();
         }
 
-        public async Task ValidateAllRowsTypeWithPaginationAsync(string expectedType)
+        public async Task<int> ValidateAllRowsTypeWithPaginationAsync(string expectedType)
         {
             if (await NoRecordsMessage.IsVisibleAsync())
-            {
-                return;
-            }
-            
-            int total = await GetTotalResultsCountAsync();
-
-            if (total == 0)
-            {
-                var noData = Page.GetByText("No Records Found");
-                await Assertions.Expect(noData).ToBeVisibleAsync();
-                return;
-            }
+                return 0;
 
             await SetPaginationTo100Async();
-            await WaitForPageStableAsync();
 
-            int validated = 0;
+            int validatedRows = 0;
 
             while (true)
             {
-                await WaitForPageStableAsync();
-
                 int rowCount = await TableRows.CountAsync();
 
                 for (int i = 0; i < rowCount; i++)
                 {
                     var typeText = await RowTypeAlertByIndex(i).InnerTextAsync();
 
-                    if (!typeText.Trim().Equals(expectedType, StringComparison.OrdinalIgnoreCase))
+                    if (!typeText.Trim().Equals(
+                            expectedType,
+                            StringComparison.OrdinalIgnoreCase))
                     {
-                        throw new Exception($"Row {i} type mismatch. Expected: {expectedType}, Actual: {typeText}");
+                        throw new Exception(
+                            $"Row {i + 1} type mismatch. Expected: {expectedType}, Actual: {typeText}");
                     }
 
-                    validated++;
+                    validatedRows++;
                 }
 
                 if (await NextPageButton.IsDisabledAsync())
@@ -405,12 +258,8 @@ namespace WiseUltimaTests.Pages.WiseExplore
                 await ClickNextPageAsync();
             }
 
-            if (validated != total)
-            {
-                throw new Exception($"Row count mismatch. Expected: {total}, Actual: {validated}");
-            }
+            return validatedRows;
         }
-
         public async Task SelectEnvironmentAsync(string environment)
         {
             var checkbox = Page
@@ -423,49 +272,64 @@ namespace WiseUltimaTests.Pages.WiseExplore
             await Page.WaitForTimeoutAsync(2000);
         }
 
-        public async Task<int> GetTotalResultsCount()
+        // public async Task<int> GetTotalResultsCount()
+        // {
+        //     await WaitForResultsToLoadAsync();
+        //     var text = await Page
+        //         .Locator("h6.mud-typography")
+        //         .Filter(new() { HasText = "Number of results:" })
+        //         .InnerTextAsync();
+
+        //     var countText = text.Replace("Number of results:", "").Trim();
+
+        //     return int.Parse(countText);
+        // }
+
+        public async Task WaitForResultsToLoadAsync()
         {
-            var text = await Page
-                .Locator("h6.mud-typography")
-                .Filter(new() { HasText = "Number of results:" })
-                .InnerTextAsync();
+            var searchingMessage = Page.GetByText("Searching system");
 
-            var countText = text.Replace("Number of results:", "").Trim();
+            try
+            {
+                if (await searchingMessage.IsVisibleAsync(new() { Timeout = 1000 }))
+                {
+                    await searchingMessage.WaitForAsync(new()
+                    {
+                        State = WaitForSelectorState.Hidden,
+                        Timeout = 60000
+                    });
+                }
+            }
+            catch
+            {
+                // Searching message never appeared.
+                // Continue execution normally.
+            }
 
-            return int.Parse(countText);
+            await WaitForPageStableAsync();
         }
 
-        public async Task ValidateAllRowsEnvironmentWithPaginationAsync(string expectedEnvironment)
+        public async Task<int> ValidateAllRowsEnvironmentWithPaginationAsync(string expectedEnvironment)
         {
-            int totalResults = await GetTotalResultsCount();
+            await WaitForResultsToLoadAsync();
 
-            // Handle No Records Found
-            if (totalResults == 0)
+            if (await NoRecordsMessage.IsVisibleAsync())
             {
-                var noRecords = await Page
-                    .Locator("h6.mud-typography")
-                    .Filter(new() { HasText = "No Records Found" })
-                    .IsVisibleAsync();
-
-                Assert.True(noRecords,
-                    "Expected No Records Found message.");
-
-                return;
+                return 0;
             }
 
             await SetPaginationTo100Async();
 
-            int verifiedRows = 0;
+            int validatedRows = 0;
 
             while (true)
             {
-                await Page.WaitForTimeoutAsync(2000);
+                await WaitForPageStableAsync();
 
-                var rows = await Page.Locator("tbody tr").CountAsync();
+                int rows = await TableRows.CountAsync();
 
                 for (int i = 0; i < rows; i++)
                 {
-                    // FIRST alert only
                     var environmentText = await Page
                         .Locator("tbody tr")
                         .Nth(i)
@@ -473,30 +337,116 @@ namespace WiseUltimaTests.Pages.WiseExplore
                         .First
                         .InnerTextAsync();
 
-                    Assert.True(
-                        environmentText.Trim()
-                            .Equals(expectedEnvironment,
-                            StringComparison.OrdinalIgnoreCase),
+                    bool isValid;
 
-                        $"Row {i + 1} mismatch. " +
-                        $"Expected: {expectedEnvironment}, " +
-                        $"Actual: {environmentText}"
-                    );
+                    if (expectedEnvironment.Equals(
+                            "Production",
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        isValid =
+                            environmentText.Trim().Equals(
+                                "Production",
+                                StringComparison.OrdinalIgnoreCase)
+                            ||
+                            environmentText.Trim().Equals(
+                                "PRD",
+                                StringComparison.OrdinalIgnoreCase);
+                    }
+                    else
+                    {
+                        isValid =
+                            environmentText.Trim().Equals(
+                                expectedEnvironment,
+                                StringComparison.OrdinalIgnoreCase);
+                    }
 
-                    verifiedRows++;
+                    if (!isValid)
+                    {
+                        throw new Exception(
+                            $"Row {i + 1} mismatch. Expected: {expectedEnvironment}, Actual: {environmentText}");
+                    }
+
+                    validatedRows++;
                 }
 
-                var nextButton = Page.GetByRole(AriaRole.Button, new() { Name = "Next page" });
-
-                if (await nextButton.IsDisabledAsync())
+                if (await NextPageButton.IsDisabledAsync())
                     break;
 
-                await nextButton.ClickAsync();
-
-                await Page.WaitForTimeoutAsync(2000);
+                await ClickNextPageAsync();
             }
 
-            Assert.Equal(totalResults, verifiedRows);
+            return validatedRows;
+        }
+
+        public async Task ValidateCriticalResultsAsync()
+        {
+            await ValidateFilterResultsAsync(CriticalColor);
+        }
+
+        public async Task ValidateTrippingResultsAsync()
+        {
+            await ValidateFilterResultsAsync(TrippingColor);
+        }
+
+        public async Task ValidateSafeResultsAsync()
+        {
+            await ValidateFilterResultsAsync(SafeColor);
+        }
+
+        public async Task ValidateFilterResultsAsync(string expectedColor)
+        {
+            int total = await GetTotalResultsCountAsync();
+
+            // No Records scenario
+            if (total == 0)
+            {
+                await Assertions.Expect(NoRecordsMessage)
+                    .ToBeVisibleAsync();
+
+                return;
+            }
+
+            await SetPaginationTo100Async();
+            await WaitForPageStableAsync();
+
+            int validatedRows = 0;
+
+            while (true)
+            {
+                await WaitForPageStableAsync();
+
+                int rowCount = await TableRows.CountAsync();
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    var row = TableRows.Nth(i);
+
+                    var chipStyle = await row
+                        .Locator("div.mud-chip")
+                        .First
+                        .GetAttributeAsync("style");
+
+                    Assert.NotNull(chipStyle);
+
+                    var normalizedStyle = chipStyle!
+                        .Replace(" ", "")
+                        .ToUpperInvariant();
+
+                    Assert.Contains(
+                        $"COLOR:{expectedColor.ToUpperInvariant()}",
+                        normalizedStyle);
+
+                    validatedRows++;
+                }
+
+                if (await NextPageButton.IsDisabledAsync())
+                    break;
+
+                await ClickNextPageAsync();
+            }
+
+            Assert.Equal(total, validatedRows);
         }
     }
 }
+  

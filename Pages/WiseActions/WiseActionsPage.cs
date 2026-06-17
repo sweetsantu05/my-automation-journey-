@@ -1,6 +1,7 @@
 using Microsoft.Playwright;
 using WiseUltimaTests.Pages.PreRequisites;
 using System.Text.RegularExpressions;
+using System.Net.Mail;
 
 namespace WiseUltimaTests.Pages.WiseActions
 {
@@ -61,7 +62,7 @@ namespace WiseUltimaTests.Pages.WiseActions
             await Page.WaitForTimeoutAsync(1000);
             // await cardSection.ClickAsync();
         }
-        public async Task ValidateCardDataConsistencyAsync(ActionCardType card)
+        public async Task ValidateCardDataConsistencyAsync123(ActionCardType card)
         {
             await ClickCard(card);
 
@@ -90,6 +91,12 @@ namespace WiseUltimaTests.Pages.WiseActions
             Console.WriteLine($"[{card}] Red: {red}, Amber: {amber}, Expected: {expectedTotal}, Actual: {actualTotal}");
 
             Assert.Equal(expectedTotal, actualTotal);
+            
+            int actualRows = await Page
+                .Locator(".mud-table-body tr")
+                .CountAsync();
+
+            Assert.Equal(expectedTotal, actualRows);
         }
 
         private async Task<(int red, int amber)> GetRedAmberCountAsync(ActionCardType card)
@@ -231,6 +238,119 @@ namespace WiseUltimaTests.Pages.WiseActions
 
             return false;
         }
+
+        // main funtion 
+        public async Task ValidateCardDataConsistencyAsync(ActionCardType card)
+        {
+            await ClickCard(card);
+
+            var (red, amber) =
+                await GetRedAmberCountAsync(card);
+
+            int expectedCount = red + amber;
+
+            var healthyMessage =
+                Page.GetByText("All systems are healthy!");
+
+            if (expectedCount == 0)
+            {
+                await Assertions.Expect(healthyMessage)
+                    .ToBeVisibleAsync();
+
+                return;
+            }
+
+            await Assertions.Expect(
+                Page.Locator(".mud-table-body tr").First
+            ).ToBeVisibleAsync();
+
+            await SetPaginationTo100Async();
+
+            int actualRows =
+                await CountRowsAcrossAllPagesAsync();
+
+            Console.WriteLine(
+                $"[{card}] Expected={expectedCount}, Actual={actualRows}"
+            );
+
+            Assert.Equal(expectedCount, actualRows);
+        }
+        private async Task SetPaginationTo100Async()
+        {
+            var paginationDropdown =
+                Page.Locator(".mud-table-pagination")
+                    .GetByText("10", new() { Exact = true });
+
+            await paginationDropdown.ClickAsync();
+
+            await Page.GetByText("100", new() { Exact = true })
+            .WaitForAsync();
+
+            await Page.GetByText("100", new() { Exact = true })
+                .ClickAsync();
+            await Page.WaitForTimeoutAsync(10000);
+
+            await WaitForTableToLoadAsync();
+
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        }
+
+        private async Task<int> CountRowsAcrossAllPagesAsync()
+        {
+            int totalRows = 0;
+
+            while (true)
+            {
+                await Page.WaitForTimeoutAsync(10000);
+
+                int rows =
+                    await Page.Locator(".mud-table-body tr")
+                        .CountAsync();
+
+                totalRows += rows;
+
+                string beforePagination =
+                    await TablePaginationText.InnerTextAsync();
+
+                var nextButton =
+                    Page.Locator(".mud-table-pagination-actions button")
+                        .Nth(2);
+
+                await nextButton.ClickAsync(new()
+                {
+                    Force = true
+                });
+
+                await Page.WaitForTimeoutAsync(10000);
+
+                string afterPagination =
+                    await TablePaginationText.InnerTextAsync();
+
+                Console.WriteLine(
+                    $"Before: {beforePagination}"
+                );
+
+                Console.WriteLine(
+                    $"After : {afterPagination}"
+                );
+
+                if (beforePagination == afterPagination)
+                {
+                    Console.WriteLine(
+                        "Last page reached."
+                    );
+
+                    break;
+                }
+            }
+
+            return totalRows;
+        }
+        public async Task<int> GetDisplayedTableCountAsync()
+        {
+            return await GetTotalTableCountAsync();
+        }
+
     }
 
     public enum ActionCardType
