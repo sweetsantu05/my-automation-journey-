@@ -50,9 +50,9 @@ namespace WiseUltimaTests.Tests.WiseBoard
 
         [Fact]
         [Trait("Category", "Smoke")]
-        [AllureOwner("TC_002_WiseBoard_Should_Load_W_Pridict")]
+        [AllureOwner("TC_002_WiseBoard_Should_Load_W_Predict")]
         [AllureTag("Smoke")]
-        public async Task TC_002_WiseBoard_Should_Load_W_Pridict()
+        public async Task TC_002_WiseBoard_Should_Load_W_Predict()
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
@@ -62,14 +62,14 @@ namespace WiseUltimaTests.Tests.WiseBoard
                 await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "W-Predict" })).ToBeVisibleAsync();
 
                 Logger.Info("TC_WISEBOARD_02: Wise Board Week Pridiction Page loaded with all sections successfully.");
-            }, nameof(TC_002_WiseBoard_Should_Load_W_Pridict));
+            }, nameof(TC_002_WiseBoard_Should_Load_W_Predict));
         }
 
         [Fact]
         [Trait("Category", "Smoke")]
-        [AllureOwner("TC_003_WiseBoard_Should_Load_M_Pridict")]
+        [AllureOwner("TC_003_WiseBoard_Should_Load_M_Predict")]
         [AllureTag("Smoke")]
-        public async Task TC_003_WiseBoard_Should_Load_M_Pridict()
+        public async Task TC_003_WiseBoard_Should_Load_M_Predict()
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
@@ -79,7 +79,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
                 await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" })).ToBeVisibleAsync();
 
                 Logger.Info("TC_WISEBOARD_03: Wise Board Month Pridiction Page loaded with all sections successfully.");
-            }, nameof(TC_003_WiseBoard_Should_Load_M_Pridict));
+            }, nameof(TC_003_WiseBoard_Should_Load_M_Predict));
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Green);
-                await Assertions.Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Server" })).ToBeVisibleAsync();
+                await Assertions.Expect(Page.GetByText("Green")).ToBeVisibleAsync();
             }, nameof(TC_004_Verify_Current_Server_Status_Green));
         }
 
@@ -106,6 +106,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Amber);
+                await Assertions.Expect(Page.GetByText("Amber")).ToBeVisibleAsync();
             }, nameof(TC_005_Verify_Current_Server_Status_Amber));
         }
 
@@ -119,6 +120,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Red);
+                await Assertions.Expect(Page.GetByText("Red", new() { Exact = true })).ToBeVisibleAsync();
             }, nameof(TC_006_Verify_Current_Server_Status_Red));
         }
 
@@ -132,7 +134,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Green);
-                await Assertions.Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Server" })).ToBeVisibleAsync();
+                await Assertions.Expect(Page.GetByText("Green")).ToBeVisibleAsync();
             }, nameof(TC_007_Verify_W_Predict_Server_Status_Green));
         }
 
@@ -146,7 +148,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Amber);
-                await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "W-Predict" })).ToBeVisibleAsync();
+                await Assertions.Expect(Page.GetByText("Amber")).ToBeVisibleAsync();
             }, nameof(TC_008_Verify_W_Predict_Server_Status_Amber));
         }
 
@@ -160,7 +162,8 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToWPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Red);
-                await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "W-Predict" })).ToBeVisibleAsync();
+                await Assertions.Expect(Page.GetByText("Red", new() { Exact = true })).ToBeVisibleAsync();
+                 
             }, nameof(TC_009_Verify_W_Predict_Server_Status_Red));
         }
 
@@ -174,6 +177,8 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Green);
+                await Assertions.Expect(Page.GetByText("Green")).ToBeVisibleAsync();
+
             }, nameof(TC_010_Verify_M_Predict_Server_Status_Green));
         }
 
@@ -187,7 +192,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Amber);
-                await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" })).ToBeVisibleAsync();
+                await Assertions.Expect(Page.GetByText("Amber")).ToBeVisibleAsync();
             }, nameof(TC_011_Verify_M_Predict_Server_Status_Amber));
         }
 
@@ -201,7 +206,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToMPredictAsync();
                 await _wiseBoardPage.ValidateStatusAsync(StatusType.Red);
-                await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" })).ToBeVisibleAsync();
+                await Assertions.Expect(Page.GetByText("Red", new() { Exact = true })).ToBeVisibleAsync();
             }, nameof(TC_012_Verify_M_Predict_Server_Status_Red));
         }
 
@@ -215,6 +220,7 @@ namespace WiseUltimaTests.Tests.WiseBoard
             {
                 await _basicSetup.SwitchToCurrentAsync();
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Storage);
+                await Assertions.Expect(Page.GetByText(new System.Text.RegularExpressions.Regex("^(Red|Green|Amber)$"))).ToBeVisibleAsync();
             }, nameof(TC_013_Verify_Current_Storage_All_Status));
         }
 

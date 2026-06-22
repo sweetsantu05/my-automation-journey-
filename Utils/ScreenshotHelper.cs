@@ -20,7 +20,7 @@ namespace WiseUltimaTests.Utils
             {
                 Directory.CreateDirectory(ScreenshotDir);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

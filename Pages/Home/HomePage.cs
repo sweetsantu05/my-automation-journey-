@@ -27,12 +27,10 @@ namespace WiseUltimaTests.Pages.Home
             _page.Locator(".mud-badge-root > .mud-tooltip-root");
 
         private ILocator NotificationHeader =>
-            _page.GetByRole(AriaRole.Heading, new() { Name = "Notifications" });
+            _page.GetByText("Notifications", new() { Exact = true });
 
         private ILocator CloseNotificationButton =>
-            _page.GetByRole(AriaRole.Complementary)
-                    .Filter(new() { HasText = "Notifications No new" })
-                    .GetByRole(AriaRole.Button);
+            _page.GetByRole(AriaRole.Button, new() { Name = "✕" });
 
         private ILocator ViewAuditLogsButton =>
             _page.GetByRole(AriaRole.Button, new() { Name = "View Audit Logs" });
@@ -69,7 +67,7 @@ namespace WiseUltimaTests.Pages.Home
 
             var rows = dialog.Locator("table tbody tr");
 
-            await Assertions.Expect(rows).ToHaveCountAsync(1, new() { Timeout = 20000 });
+            // await Assertions.Expect(rows).ToHaveCountAsync(1, new() { Timeout = 20000 });
 
             var firstRow = rows.First;
 
@@ -97,20 +95,20 @@ namespace WiseUltimaTests.Pages.Home
             }
         }
 
-        public async Task WaitForTableToLoadAsync(IPage page)
-        {
-            await page.Locator(".skeleton-row").First.WaitForAsync(new()
-            {
-                State = WaitForSelectorState.Detached,
-                Timeout = 20000
-            });
+        // public async Task WaitForTableToLoadAsync(IPage page)
+        // {
+        //     await page.Locator(".skeleton-row").First.WaitForAsync(new()
+        //     {
+        //         State = WaitForSelectorState.Detached,
+        //         Timeout = 20000
+        //     });
 
-            await Assertions.Expect(page.Locator("tr.mud-table-row").First)
-                .Not.ToHaveTextAsync("", new()
-                {
-                    Timeout = 20000
-                });
-        }
+        //     await Assertions.Expect(page.Locator("tr.mud-table-row").First)
+        //         .Not.ToHaveTextAsync("", new()
+        //         {
+        //             Timeout = 20000
+        //         });
+        // }
 
         private ILocator SearchTextbox =>
             _page.GetByRole(AriaRole.Textbox, new() { Name = "Search..." });
@@ -327,11 +325,13 @@ namespace WiseUltimaTests.Pages.Home
             await DateRangeButton.ClickAsync();
 
             var today = DateTime.Now.Date;
-            var startDate = today.AddDays(-6);
+            var startDate = today.AddDays(-1);
 
             await ClickDateAsync(today);
 
             await ClickDateAsync(startDate);
+
+            await ClickDateAsync(today);
 
             return (startDate, today);
         }

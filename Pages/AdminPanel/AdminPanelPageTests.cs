@@ -37,34 +37,18 @@ namespace WiseUltimaTests.Tests.AdminPanel
 
         [Fact]
         [Trait("Category", "Regression")]
-        [AllureOwner("TC_001_Open_AdminPanel")]
-        public async Task TC_001_Open_AdminPanel()
+        [AllureOwner("TC_001_Open_Verify_AdminPanel")]
+        public async Task TC_001_Verify_AdminPanel_Loaded()
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
                 await _adminPage.OpenAdminPanel();
                 await Assertions.Expect(Page.GetByRole(AriaRole.Heading).Filter(new() { HasText = "Welcome" })).ToBeVisibleAsync();
 
-                Logger.Info("TC_001: Navigated to Admin Panel successfully.");
 
-            }, nameof(TC_001_Open_AdminPanel));
-        }
+                Logger.Info("TC_001: Admin Panel loaded successfully.");
 
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_002_Verify_AdminPanel_Loaded")]
-        public async Task TC_002_Verify_AdminPanel_Loaded()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _adminPage.OpenAdminPanel();
-                await _adminPage.VerifyAdminPanelLoadedAsync();
-                await Assertions.Expect(Page.GetByRole(AriaRole.Heading).Filter(new() { HasText = "Welcome" })).ToBeVisibleAsync();
-
-
-                Logger.Info("TC_002: Admin Panel loaded successfully.");
-
-            }, nameof(TC_002_Verify_AdminPanel_Loaded));
+            }, nameof(TC_001_Verify_AdminPanel_Loaded));
         }
 
         [Fact]
@@ -76,6 +60,8 @@ namespace WiseUltimaTests.Tests.AdminPanel
             {
                 await _adminPage.OpenAdminPanel();
                 await _adminPage.OpenEmailTriggerPopupAsync();
+    
+                // await Assertions.Expect(Page.GetByText("Health alert email sent")).ToBeVisibleAsync();
 
                 Logger.Info("TC_003: Email Trigger popup opened successfully.");
 

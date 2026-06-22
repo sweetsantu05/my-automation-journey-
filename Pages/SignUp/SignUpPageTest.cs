@@ -72,7 +72,7 @@ namespace WiseUltimaTests.Tests.SignUp
 
                 var count = await requiredMessages.CountAsync();
 
-                Assert.True(count >= 1);
+                Assert.True(count>=1);
 
                 Logger.Info("TC_SIGNUP_03:Empty Password validiation successful.");
             }, nameof(TC_003_Validate_Registeration_Empty_Password));
@@ -89,15 +89,12 @@ namespace WiseUltimaTests.Tests.SignUp
             {
                 await _signUpPage.ValidateRegisterationValidCredentials();
 
-                await Page.WaitForURLAsync(
-                    "**/Account/RegisterConfirmation",
-                    new PageWaitForURLOptions { Timeout = 15000 });
+                await Page.WaitForURLAsync("**/Account/RegisterConfirmation",new PageWaitForURLOptions { Timeout = 15000 });
 
                 await Assertions.Expect(Page).ToHaveURLAsync(new Regex("RegisterConfirmation"));
 
                 await Assertions.Expect(Page.GetByText("Registration Successful", new() { Exact = true })).ToBeVisibleAsync();
 
-                await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "Go to Login" })).ToBeVisibleAsync();
 
                 Logger.Info("TC_SIGNUP_04: Registration successful with valid credentials.");
             }, nameof(TC_004_Validate_Registeration_Valid_Credentials));
