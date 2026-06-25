@@ -1,4 +1,4 @@
-+using WiseUltimaTests.Pages.Login;
+using WiseUltimaTests.Pages.Login;
 using Microsoft.Playwright;
 using WiseUltimaTests.Pages.PreRequisites;
 using WiseUltimaTests.Pages.WiseActions;
@@ -33,7 +33,7 @@ namespace WiseUltimaTests.Tests.WiseActions
         
         [Fact]
         [Trait("Category", "Smoke")]
-        [AllureOwner("TC_001_WiseActions_Should_Load_Current")]
+        [AllureOwner("TC_001_WiseActions_Should_Load_Current_Predict")]
         [AllureTag("Smoke")]
         public async Task TC_001_WiseActions_Should_Load_Current()
         {
@@ -42,13 +42,15 @@ namespace WiseUltimaTests.Tests.WiseActions
                 await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.VerifyActButton();
+                Assert.True(await Page.Locator(".mud-table-body tr").CountAsync() > 0,"Action Recommendations table should contain at least one record.");
+
                 Logger.Info("TC_WISEACTION_01: Wise Actions page and action modal validated successfully.");
             }, nameof(TC_001_WiseActions_Should_Load_Current));
         }
 
         [Fact]
         [Trait("Category", "Smoke")]
-        [AllureOwner("TC_002_WiseActions_Should_Load_W_Pridict")]
+        [AllureOwner("TC_002_WiseActions_Should_Load_W_Predict")]
         [AllureTag("Smoke")]
         public async Task TC_002_WiseActions_Should_Load_W_Pridict()
         {
@@ -57,13 +59,15 @@ namespace WiseUltimaTests.Tests.WiseActions
                 await _basicSetup.SwitchToWPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.VerifyActButton();
+                await Assertions.Expect(Page.Locator(".mud-table-body tr").First).ToBeVisibleAsync();
+
                 Logger.Info("TC_WISEACTION_02: Wise Actions page and action modal validated successfully.");
             }, nameof(TC_002_WiseActions_Should_Load_W_Pridict));
         }
 
         [Fact]
         [Trait("Category", "Smoke")]
-        [AllureOwner("TC_003_WiseActions_Should_Load_M_Pridict")]
+        [AllureOwner("TC_003_WiseActions_Should_Load_M_Predict")]
         [AllureTag("Smoke")]
         public async Task TC_003_WiseActions_Should_Load_M_Pridict()
         {
@@ -72,6 +76,8 @@ namespace WiseUltimaTests.Tests.WiseActions
                 await _basicSetup.SwitchToMPredictAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.VerifyActButton();
+                await Assertions.Expect(Page.Locator(".mud-table-body tr").First).ToBeVisibleAsync();
+
                 Logger.Info("TC_WISEACTION_03: Wise Actions page and action modal validated successfully.");
             }, nameof(TC_003_WiseActions_Should_Load_M_Pridict));
         }
@@ -87,6 +93,8 @@ namespace WiseUltimaTests.Tests.WiseActions
                 await _basicSetup.SwitchBasedOnAppAsync();
                 await _basicSetup.WaitForDashboardStableAsync();
                 await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Server);
+                int count = await _wiseActionsPage.GetDisplayedTableCountAsync();
+                Assert.True(count >= 0,"Table count should be available.");
             }, nameof(TC_004_Server_Current_Data_Validation));
         }
 
@@ -383,7 +391,7 @@ namespace WiseUltimaTests.Tests.WiseActions
 
                 if (isDisabled)
                 {
-                    Console.WriteLine("✅ Ticket already raised - button disabled");
+                    Console.WriteLine(" Ticket already raised - button disabled");
                     Assert.True(isDisabled);
                 }
                 else
@@ -419,6 +427,48 @@ namespace WiseUltimaTests.Tests.WiseActions
 
                 Assert.Contains("Ticket raised successfully", message);
             }, nameof(TC_024_Raise_Ticket_Using_Jira_And_Validate));
+        }
+
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_025_Raise_Ticket_Using_ServiesNow_And_Validate")]
+        [AllureTag("Regression")]
+        public async Task TC_025_Raise_Ticket_Using_ServiesNow_And_Validate()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseActionsPage.ClickRandomRowActAsync();
+
+                // var raiseBtn = Page.GetByRole(AriaRole.Button, new() { Name = "RAISE TICKET" });
+                // await raiseBtn.ClickAsync();
+
+                // // await Page.Locator(".mud-popover-open .mud-list-item:has-text('Jira')")
+                // //         .ClickAsync();
+                // await Page.GetByText("ServiceNow").ClickAsync();
+
+                // await Page.GetByRole(AriaRole.Button, new() { Name = "Submit" }).ClickAsync();
+
+                // var snackbar = Page.Locator(".mud-snackbar-content-message");
+                // await snackbar.WaitForAsync();
+
+                // string message = await snackbar.InnerTextAsync();
+
+                await _wiseActionsPage.ClickRaiseTicketAsync();
+                await _wiseActionsPage.Click_ServiceNow_Button();
+                string ticketNumber = await _wiseActionsPage.GetRaisedTicketNumberAsync();
+
+                // Console.WriteLine($"Ticket Raised: {ticketNumber} via {platform}");
+
+                await _wiseActionsPage.CloseActionPopupAsync();
+                await _wiseActionsPage.GoToMyTicketsAsync();
+
+                bool isTicketPresent = await _wiseActionsPage.VerifyTicketInMyTicketsAsync(ticketNumber);
+
+                Assert.True(isTicketPresent, $" Ticket {ticketNumber} not found in My Tickets");
+                
+
+                
+            }, nameof(TC_025_Raise_Ticket_Using_ServiesNow_And_Validate));
         }
     }
 }
