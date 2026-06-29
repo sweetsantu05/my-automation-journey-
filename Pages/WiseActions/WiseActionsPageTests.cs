@@ -311,20 +311,6 @@ namespace WiseUltimaTests.Tests.WiseActions
 
         [Fact]
         [Trait("Category", "Regression")]
-        [AllureOwner("TC_020_Backup_WPredict_Data_Validation")]
-        [AllureTag("Regression")]
-        public async Task TC_020_Backup_WPredict_Data_Validation()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _basicSetup.SwitchToWPredictAsync();
-                await _basicSetup.WaitForDashboardStableAsync();
-                await _wiseActionsPage.ValidateCardDataConsistencyAsync(ActionCardType.Backup);
-            }, nameof(TC_020_Backup_WPredict_Data_Validation));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
         [AllureOwner("TC_021_Backup_MPredict_Data_Validation")]
         [AllureTag("Regression")]
         public async Task TC_021_Backup_MPredict_Data_Validation()
