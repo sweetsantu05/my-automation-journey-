@@ -439,19 +439,19 @@ namespace WiseUltimaTests.Tests.WiseActions
             {
                 await _wiseActionsPage.ClickRandomRowActAsync();
 
-                // var raiseBtn = Page.GetByRole(AriaRole.Button, new() { Name = "RAISE TICKET" });
-                // await raiseBtn.ClickAsync();
+                var raiseBtn = Page.GetByRole(AriaRole.Button, new() { Name = "RAISE TICKET" });
+                await raiseBtn.ClickAsync();
 
-                // // await Page.Locator(".mud-popover-open .mud-list-item:has-text('Jira')")
-                // //         .ClickAsync();
-                // await Page.GetByText("ServiceNow").ClickAsync();
+                // await Page.Locator(".mud-popover-open .mud-list-item:has-text('Jira')")
+                //         .ClickAsync();
+                await Page.GetByText("ServiceNow").ClickAsync();
 
-                // await Page.GetByRole(AriaRole.Button, new() { Name = "Submit" }).ClickAsync();
+                await Page.GetByRole(AriaRole.Button, new() { Name = "Submit" }).ClickAsync();
 
-                // var snackbar = Page.Locator(".mud-snackbar-content-message");
-                // await snackbar.WaitForAsync();
+                var snackbar = Page.Locator(".mud-snackbar-content-message");
+                await snackbar.WaitForAsync();
 
-                // string message = await snackbar.InnerTextAsync();
+                string message = await snackbar.InnerTextAsync();
 
                 await _wiseActionsPage.ClickRaiseTicketAsync();
                 await _wiseActionsPage.Click_ServiceNow_Button();
