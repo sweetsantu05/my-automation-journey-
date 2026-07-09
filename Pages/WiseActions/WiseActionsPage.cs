@@ -373,6 +373,6 @@ namespace WiseUltimaTests.Pages.WiseActions
         Database,
         Network,
         Middleware,
-        Backup
+        
     }
 }
