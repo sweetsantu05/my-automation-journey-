@@ -366,13 +366,5 @@ namespace WiseUltimaTests.Pages.WiseActions
 
     }
 
-    public enum ActionCardType
-    {
-        Server,
-        Storage,
-        Database,
-        Network,
-        Middleware,
-        
-    }
+    
 }
