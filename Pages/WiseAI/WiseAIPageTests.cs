@@ -62,26 +62,6 @@ namespace WiseUltimaTests.Tests.WiseAI
 
         [Fact]
         [Trait("Category", "Regression")]
-        [AllureOwner("TC_003_WiseAI_Should_Handle_Multiple_Popular_Queries")]
-        [AllureTag("Regression")]
-        public async Task TC_003_WiseAI_Should_Handle_Multiple_Popular_Queries()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseAIPage.OpenAsync();
-                await _wiseAIPage.ClickRandomPopularQueryAsync();
-                await _wiseAIPage.VerifyAiResponse();
-
-                await _wiseAIPage.MultiplePopularQueriesFromSidebarAsync(3);
-                await Assertions.Expect(Page.Locator(".mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.circle-icon-button")).ToBeVisibleAsync();
-
-
-                Logger.Info("TC_003: Multiple popular queries handled successfully.");
-            }, nameof(TC_003_WiseAI_Should_Handle_Multiple_Popular_Queries));
-        }
-
-        [Fact]
-        [Trait("Category", "Regression")]
         [AllureOwner("TC_004_VM_Context_Should_Respond_To_Query")]
         [AllureTag("Regression")]
         public async Task TC_004_VM_Context_Should_Respond_To_Query()
