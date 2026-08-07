@@ -93,74 +93,7 @@ namespace WiseUltimaTests.Utils
             }
         }
 
-        public async Task RunWithTracingAsync(Func<Task> testAction, string testName)
-        {
-            bool failed = false;
 
-            try
-            {
-                await StartTracingForTestAsync(testName);
-
-                await testAction();
-
-                // Screenshot for PASSED test
-                try
-                {
-                    var page = _context.Pages.FirstOrDefault();
-                    if (page != null)
-                    {
-                        await ScreenshotHelper.TakeScreenshotAsync(page, testName, "PASSED");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.Warn($"Screenshot (PASS) failed: {ex.Message}");
-                }
-            }
-            catch (Exception ex)
-            {
-                failed = true;
-
-                Logger.Error($"Test '{testName}' failed: {ex.Message}");
-
-                // Screenshot for FAILED test
-                try
-                {
-                    var page = _context.Pages.FirstOrDefault();
-                    if (page != null)
-                    {
-                        await ScreenshotHelper.TakeScreenshotAsync(page, testName, "FAILED");
-                    }
-                }
-                catch (Exception screenshotEx)
-                {
-                    Logger.Warn($"Screenshot (FAIL) failed: {screenshotEx.Message}");
-                }
-
-                throw; // Important
-            }
-            finally
-            {
-                await StopAndAttachTraceIfFailedAsync(failed, testName);
-            }
-        }
-        public void AttachScreenshotToAllure(string screenshotPath, string testName)
-        {
-            if (File.Exists(screenshotPath))
-            {
-                AllureApi.AddAttachment(
-                    screenshotPath,
-                    "image/png",
-                    $"screenshot-{testName}.png"
-                );
-
-                Logger.Info($"Screenshot attached to Allure: {screenshotPath}");
-            }
-            else
-            {
-                Logger.Warn($"Screenshot file not found: {screenshotPath}");
-            }
-        }
 
     }
 }
