@@ -163,8 +163,7 @@ namespace WiseUltimaTests.Tests.WiseMonitor
                 await _wiseMonitorPage.Verifyserver();
                 await _wiseMonitorPage.SelectTimelineAsync(timeline);
 
-                string cpuUtilization = await _wiseMonitorPage.GetCpuUtilizationAsync();
-                string diskUtilization = await _wiseMonitorPage.GetDiskUtilizationAsync();
+                
 
                 Console.WriteLine();
                 Console.WriteLine($"Timeline Selected : {timeline}");
