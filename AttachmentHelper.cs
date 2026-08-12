@@ -49,21 +49,7 @@ namespace WiseUltimaTests.Utils
                 //if (!testFailed)
                 //{
                     // Attach trace to Allure report
-                    if (File.Exists(_currentTracePath))
-                    {
-                        AllureApi.AddAttachment(
-                            $"trace-{testName}.zip" ,
-                            "application/zip",  
-                            _currentTracePath                    
-                                            
-                        );
-
-                        Logger.Info($"Trace file attached to Allure report: {Path.GetFullPath(_currentTracePath)}");
-                    }
-                    else
-                    {
-                        Logger.Warn($"Trace file not found for attachment: {Path.GetFullPath(_currentTracePath)}");
-                    }
+                    
                 /*}
                 else
                 {
