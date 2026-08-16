@@ -286,7 +286,40 @@ namespace WiseUltimaTests.Pages.Home
             }
         }
 
+        public async Task Verify_clear_filter()
+            {
+                var rows = _page.Locator("table tbody tr");
+
+                int count = await rows.CountAsync();
+
+                Assert.True(count > 1);
+
+                Logger.Info("All filter cleared");
+            }
+
+        private ILocator DateRangeButton =>
+        _page.GetByRole(AriaRole.Button, new() { Name = "Open Date Range Picker" });
         
+        private async Task ClickDateAsync(DateTime date)
+        {
+            string day = date.Day.ToString();
+
+            for (int i = 0; i < 12; i++) // max 12 months safety
+            {
+                var dayLocator = _page.Locator(".mud-day")
+                    .GetByText(day, new() { Exact = true });
+
+                if (await dayLocator.CountAsync() > 0)
+                {
+                    await dayLocator.First.ClickAsync();
+                    return;
+                }
+
+                await _page.Locator("button").Filter(new() { HasText = "" }).Nth(0).ClickAsync();
+            }
+
+            throw new Exception($"Date not found: {date}");
+        }
         public async Task<(DateTime start, DateTime end)> SelectLast7DaysRangeAsync()
         {
             await DateRangeButton.ClickAsync();
