@@ -362,6 +362,18 @@ namespace WiseUltimaTests.Pages.Home
         private ILocator WiseAICard =>
             _page.GetByRole(AriaRole.Heading, new() {  Name = "Wise AI" });
 
-       
+        public async Task ClickWiseAi()
+        {
+            await WiseAICard.ClickAsync();
+            await _setup.WaitForDashboardStableAsync();
+        }
+
+        private ILocator WiseAgentsCard =>
+            _page.GetByRole(AriaRole.Heading, new() { Name = "Wise Agents" });
+
+        public async Task ClickWiseAgnet()
+        {
+            await WiseAgentsCard.ClickAsync();
+        }
     }
 }
