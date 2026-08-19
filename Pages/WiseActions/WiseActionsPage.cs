@@ -2,8 +2,11 @@ using Microsoft.Playwright;
 using WiseUltimaTests.Pages.PreRequisites;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
+<<<<<<< HEAD
 using System.Security.Cryptography.X509Certificates;
 using System.Runtime.CompilerServices;
+=======
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
 
 namespace WiseUltimaTests.Pages.WiseActions
 {
@@ -28,6 +31,7 @@ namespace WiseUltimaTests.Pages.WiseActions
         {
             await Assertions.Expect(ActButton).ToBeVisibleAsync(new() {Timeout=25000});
         }
+<<<<<<< HEAD
         // public async Task ServiceNow_button()
         // {
         //     await Page.GetByText("ServiceNow").ClickAsync();
@@ -37,6 +41,8 @@ namespace WiseUltimaTests.Pages.WiseActions
         {
             await servicenow_button.ClickAsync();
         }
+=======
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
 
         private ILocator GetCardSection(ActionCardType card)
         {
@@ -141,10 +147,16 @@ namespace WiseUltimaTests.Pages.WiseActions
 
             return int.Parse(match.Groups[1].Value);
         }
+<<<<<<< HEAD
  
         public async Task ClickRandomRowActAsync()
         {
             await WaitForPageStableAsync();
+=======
+
+        public async Task ClickRandomRowActAsync()
+        {
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
             await WaitForTableToLoadAsync();
 
             var actButtons = Page.Locator("div.mud-chip:has(span.mud-chip-content:has-text('Act'))");
@@ -236,14 +248,21 @@ namespace WiseUltimaTests.Pages.WiseActions
 
         public async Task<bool> VerifyTicketInMyTicketsAsync(string ticketNumber)
         {
+<<<<<<< HEAD
             await Task.Delay(10000);
+=======
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
             var rows = Page.Locator(".mud-table-body tr");
 
             int count = await rows.CountAsync();
 
             for (int i = 0; i < count; i++)
             {
+<<<<<<< HEAD
                 var rowText = await rows.Nth(i).InnerTextAsync(); 
+=======
+                var rowText = await rows.Nth(i).InnerTextAsync();
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
 
                 if (rowText.Contains(ticketNumber))
                     return true;
@@ -373,6 +392,10 @@ namespace WiseUltimaTests.Pages.WiseActions
         Database,
         Network,
         Middleware,
+<<<<<<< HEAD
         
+=======
+        Backup
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
     }
 }

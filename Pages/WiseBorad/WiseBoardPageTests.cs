@@ -5,6 +5,7 @@ using WiseUltimaTests.TestHooks;
 using WiseUltimaTests.Utils;
 using Xunit;
 using Allure.Xunit.Attributes;
+using Microsoft.Playwright;
 
 namespace WiseUltimaTests.Tests.WiseBoard
 {
@@ -26,65 +27,64 @@ namespace WiseUltimaTests.Tests.WiseBoard
 
             await _loginPage.NavigateToLoginPageAsync();
             await _loginPage.ValidateValidLogin();
-        }
-
-        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
-        [AllureOwner("TC_WISEBOARD_01")]
-        [AllureTag("smoke")]
-        [Fact]
-        public async Task WiseBoard_Should_Load_Current()
-        {
             await _wiseBoardPage.OpenAsync();
             await _basicSetup.ClickRandomCriticalAppAsync();
-            await _basicSetup.SwitchToCurrentAsync();
-            await _basicSetup.WaitForDashboardStableAsync();
-            await _basicSetup.VerifyServerLoadedAsync();
-
-            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEBOARD_01_WiseBoard_Current_Page_Loaded");
-            Logger.Info("TC_WISEBOARD_01: Wise Board Current Pridiction Page loaded with all sections successfully.");
         }
 
-        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
-        [AllureOwner("TC_WISEBOARD_02")]
-        [AllureTag("smoke")]
         [Fact]
-        public async Task WiseBoard_Should_Load_W_Pridict()
+        [Trait("Category", "Smoke")]
+        [AllureOwner("TC_001_WiseBoard_Should_Load_Current")]
+        [AllureTag("Smoke")]
+        public async Task TC_001_WiseBoard_Should_Load_Current()
         {
-            await _wiseBoardPage.OpenAsync();
-            await _basicSetup.ClickRandomCriticalAppAsync();
-            await _basicSetup.SwitchToWPredictAsync();
-            await _basicSetup.WaitForDashboardStableAsync();
-            await _basicSetup.VerifyServerLoadedAsync();
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchToCurrentAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _basicSetup.VerifyServerLoadedAsync();
+                await Assertions.Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Server" })).ToBeVisibleAsync();
 
-            await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEBOARD_02_WiseBoard_W-Pridict_Page_Loaded");
-            Logger.Info("TC_WISEBOARD_02: Wise Board Week Pridiction Page loaded with all sections successfully.");
+                Logger.Info("TC_WISEBOARD_01: Wise Board Current Pridiction Page loaded with all sections successfully.");
+            }, nameof(TC_001_WiseBoard_Should_Load_Current));
         }
 
-        [AllureSeverity(Allure.Net.Commons.SeverityLevel.critical)]
-        [AllureOwner("TC_WISEBOARD_03")]
-        [AllureTag("smoke")]
         [Fact]
-        public async Task WiseBoard_Should_Load_M_Pridict()
+        [Trait("Category", "Smoke")]
+        [AllureOwner("TC_002_WiseBoard_Should_Load_W_Predict")]
+        [AllureTag("Smoke")]
+        public async Task TC_002_WiseBoard_Should_Load_W_Predict()
         {
-            await _wiseBoardPage.OpenAsync();
-            await _basicSetup.ClickRandomCriticalAppAsync();
-            await _basicSetup.SwitchToMPredictAsync();
-            await _basicSetup.WaitForDashboardStableAsync();
-            await _basicSetup.VerifyServerLoadedAsync();
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _basicSetup.SwitchToWPredictAsync();
+                await _basicSetup.WaitForDashboardStableAsync();
+                await _basicSetup.VerifyServerLoadedAsync();
+                await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "W-Predict" })).ToBeVisibleAsync();
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
             await ScreenshotHelper.TakeScreenshotAsync(Page,"TC_WISEBOARD_03_WiseBoard_M-Pridict_Page_Loaded");
             Logger.Info("TC_WISEBOARD_03: Wise Board Month Pridiction Page loaded with all sections successfully.");
 =======
                 Logger.Info("TC_WISEBOARD_02: Wise Board Week Pridiction Page loaded with all sections successfully.");
             }, nameof(TC_002_WiseBoard_Should_Load_W_Pridict));
+=======
+                Logger.Info("TC_WISEBOARD_02: Wise Board Week Pridiction Page loaded with all sections successfully.");
+            }, nameof(TC_002_WiseBoard_Should_Load_W_Predict));
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
         }
 
         [Fact]
         [Trait("Category", "Smoke")]
+<<<<<<< HEAD
         [AllureOwner("TC_003_WiseBoard_Should_Load_M_Pridict")]
         [AllureTag("Smoke")]
         public async Task TC_003_WiseBoard_Should_Load_M_Pridict()
+=======
+        [AllureOwner("TC_003_WiseBoard_Should_Load_M_Predict")]
+        [AllureTag("Smoke")]
+        public async Task TC_003_WiseBoard_Should_Load_M_Predict()
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
         {
             await _attachmentHelper.RunWithTracingAsync(async () =>
             {
@@ -94,7 +94,11 @@ namespace WiseUltimaTests.Tests.WiseBoard
                 await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" })).ToBeVisibleAsync();
 
                 Logger.Info("TC_WISEBOARD_03: Wise Board Month Pridiction Page loaded with all sections successfully.");
+<<<<<<< HEAD
             }, nameof(TC_003_WiseBoard_Should_Load_M_Pridict));
+=======
+            }, nameof(TC_003_WiseBoard_Should_Load_M_Predict));
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
         }
 
         [Fact]
@@ -430,7 +434,10 @@ namespace WiseUltimaTests.Tests.WiseBoard
                 await _wiseBoardPage.ValidateAllStatusesAsync(CardType.Backup);
                 await Assertions.Expect(Page.GetByRole(AriaRole.Button, new() { Name = "M-Predict" })).ToBeVisibleAsync();
             }, nameof(TC_027_Verify_M_Predict_Backup_All_Status));
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
         }
     }
 }

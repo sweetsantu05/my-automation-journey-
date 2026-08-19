@@ -53,7 +53,11 @@ namespace WiseUltimaTests.Pages.WiseBoard
 
         public async Task OpenAsync()
         {
+<<<<<<< HEAD
             // await NavMenuToggleButton();
+=======
+            await NavMenuToggleButton();
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
             await WiseBoardCard.ClickAsync();
             await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-board"));
             await WaitForDashboardStableAsync();
@@ -162,4 +166,20 @@ namespace WiseUltimaTests.Pages.WiseBoard
             await ValidateCardStatusAsync(card, StatusType.Red);
         }
     }           
+
+    public enum CardType
+    {
+        Server,
+        Storage,
+        Database,
+        Network,
+        Middleware,
+        Backup
+    }
+    public enum StatusType
+    {
+        Green,
+        Amber,
+        Red
+    }
 }

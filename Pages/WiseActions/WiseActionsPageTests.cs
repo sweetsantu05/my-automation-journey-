@@ -427,6 +427,7 @@ namespace WiseUltimaTests.Tests.WiseActions
 
                 Assert.Contains("Ticket raised successfully", message);
             }, nameof(TC_024_Raise_Ticket_Using_Jira_And_Validate));
+<<<<<<< HEAD
         }
 
         [Fact]
@@ -469,6 +470,8 @@ namespace WiseUltimaTests.Tests.WiseActions
 
                 
             }, nameof(TC_025_Raise_Ticket_Using_ServiesNow_And_Validate));
+=======
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
         }
     }
 }

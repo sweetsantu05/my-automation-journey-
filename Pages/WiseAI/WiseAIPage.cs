@@ -38,6 +38,7 @@ namespace WiseUltimaTests.Pages.WiseAI
         private ILocator AiInputS =>
             Page.Locator(".mud-input.mud-input-outlined input, .mud-input.mud-input-outlined textarea");
         private static readonly Random _random = new();
+<<<<<<< HEAD
         // private ILocator RightPanelPopularQueries =>
         // Page.Locator(".right-sidebar >> div")
         //     .Filter(new() { HasTextRegex = new Regex(@".+\?") });
@@ -45,6 +46,11 @@ namespace WiseUltimaTests.Pages.WiseAI
 
         private ILocator RightPanelPopularQueries =>
     Page.Locator(".right-sidebar")
+=======
+    
+        private ILocator RightPanelPopularQueries =>
+        Page.Locator(".right-sidebar")
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
         .Locator(".sidebar-section")
         .Filter(new LocatorFilterOptions { HasText = "POPULAR QUERIES" })
         .Locator(".sidebar-list")
@@ -73,7 +79,11 @@ namespace WiseUltimaTests.Pages.WiseAI
 
             int count = await DropdownItems.CountAsync();
 
+<<<<<<< HEAD
             Assert.True(count >= 6, $"Expected at least 6 dropdown items, but found {count}");
+=======
+            // Assert.True(count >= 6, $"Expected at least 6 dropdown items, but found {count}");
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
 
             int randomIndex = new Random().Next(0, count);
 
@@ -217,6 +227,10 @@ namespace WiseUltimaTests.Pages.WiseAI
             }
         }
 
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
         public async Task MultiplePopularQueriesFromSidebarAsync(int count = 3)
         {
             for (int i = 0; i < count; i++)

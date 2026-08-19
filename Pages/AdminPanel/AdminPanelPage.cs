@@ -59,9 +59,12 @@ namespace WiseUltimaTests.Pages.AdminPanel
         public async Task OpenEmailTriggerPopupAsync()
         {
             await EmailTriggerButton.ClickAsync();
+<<<<<<< HEAD
 
             await Assertions.Expect(EmailPopup)
                 .ToBeVisibleAsync();
+=======
+>>>>>>> 8e891f61be0eeed0d65dc19d3026ad3bc393e6f3
         }
 
         public async Task TriggerEmailAsync()
