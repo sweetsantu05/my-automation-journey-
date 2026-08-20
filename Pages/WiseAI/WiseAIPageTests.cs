@@ -116,6 +116,27 @@ namespace WiseUltimaTests.Tests.WiseAI
             }, nameof(TC_005_VM_Context_Should_Handle_Multiple_Queries));
         }
 
-        
+        [Fact]
+        [Trait("Category", "Smoke")]
+        [AllureOwner("TC_006_VM_Should_Be_Selected_Before_Query")]
+        [AllureTag("Regression")]
+        public async Task TC_006_VM_Should_Be_Selected_Before_Query()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _wiseAIPage.OpenAsync();
+
+                await Assertions.Expect(_wiseAIPage.AddContextButton)
+                    .ToBeVisibleAsync();
+
+                await _wiseAIPage.SelectVMAndAskRandomQuestionAsync();
+
+                await _wiseAIPage.VerifyAiResponse();
+                await Assertions.Expect(Page.Locator(".mud-button-root.mud-icon-button.mud-ripple.mud-ripple-icon.circle-icon-button")).ToBeEnabledAsync();
+
+
+                Logger.Info("TC_006: VM selection and query flow verified.");
+            }, nameof(TC_006_VM_Should_Be_Selected_Before_Query));
+        }
     }
 }
