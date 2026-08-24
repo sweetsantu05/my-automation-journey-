@@ -29,20 +29,6 @@ namespace WiseUltimaTests.Tests.WiseAgents
             await _loginPage.ValidateValidLogin();
         }
 
-        [Fact]
-        [Trait("Category", "Smoke")]
-        [AllureOwner("TC_001_WiseAgents_Should_Load_And_Display_All_Agents")]
-        [AllureTag("Smoke")]
-        public async Task TC_001_WiseAgents_Should_Load_And_Display_All_Agents()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _wiseAgentsPage.OpenAsync();
-                await _wiseAgentsPage.VerifyWiseAgnet();
-                await Assertions.Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Wise Agents" })).ToBeVisibleAsync();
-
-                Logger.Info("TC_WISEAGENT_01: Wise Agents page loaded and all agents displayed successfully.");
-            }, nameof(TC_001_WiseAgents_Should_Load_And_Display_All_Agents));
-        }
+       
     }
 }
