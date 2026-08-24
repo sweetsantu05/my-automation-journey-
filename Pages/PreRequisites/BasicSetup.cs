@@ -105,6 +105,36 @@ namespace WiseUltimaTests.Pages.PreRequisites
             await Page.WaitForTimeoutAsync(2000);
         }
 
-        
+        public async Task VerifyServerLoadedAsync()
+        {
+            await Assertions.Expect(ServerCard)
+                .ToBeVisibleAsync(new() { Timeout = 30000 });
+        }
+
+        public async Task SwitchBasedOnAppAsync()
+        {
+            var currentTab = Page.Locator("button:has-text('CURRENT')");
+
+            if (await currentTab.CountAsync() > 0 && await currentTab.IsVisibleAsync())
+            {
+                await currentTab.ClickAsync();
+            }
+            else
+            {
+                Console.WriteLine(" CURRENT not available → switching to D-PREDICT");
+                await Page.Locator("button:has-text('D-PREDICT')").ClickAsync();
+            }
+
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        }
+
+        public async Task WaitForPageAsync(int seconds)
+        {
+            await Task.Delay(seconds * 1000);
+        }
+        public async Task NavMenuToggleButton()
+        {
+            await Page.Locator(".mud-navmenu > div:nth-child(2)").ClickAsync();
+        }
     }
 }
