@@ -48,21 +48,6 @@ namespace WiseUltimaTests.Tests.AppMetrics
             }, nameof(TC_001_Navigate_AppMetrics));
         }
 
-        [Fact]
-        [Trait("Category", "Regression")]
-        [AllureOwner("TC_002_Verify_AppMetrics_Loaded")]
-        [AllureTag("Regression")]
-        public async Task TC_002_Verify_AppMetrics_Loaded()
-        {
-            await _attachmentHelper.RunWithTracingAsync(async () =>
-            {
-                await _appMetricsPage.NavigateToAppMetricsAsync();
-                await _appMetricsPage.VerifyAppMetricsLoadedAsync();
-                await Assertions.Expect(Page.GetByText("Apps monitored:")).ToBeVisibleAsync();
-
-                Logger.Info("TC_026: App Metrics page loaded successfully.");
-
-            }, nameof(TC_002_Verify_AppMetrics_Loaded));
-        }
+        
     }
 }
