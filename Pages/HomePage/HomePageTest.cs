@@ -641,6 +641,24 @@ namespace WiseUltimaTests.Tests.Home
 
                 Logger.Info("TC_30: wise agnet page loaded successfully.");
             }, nameof(TC_030_Navigate_WiseAgent));
-        }  
+        } 
+
+        
+        [Fact]
+        [Trait("Category", "Regression")]
+        [AllureOwner("TC_031_Navigate_WiseExplore_validate")]
+        [AllureTag("Regression")]
+        public async Task TC_031_Navigate_WiseExplore()
+        {
+            await _attachmentHelper.RunWithTracingAsync(async () =>
+            {
+                await _homePage.VerifyHomePageLoadedAsync();
+                await Assertions.Expect(Page.GetByText(new Regex(@"Welcome"))).ToBeVisibleAsync();
+                await _homePage.ClickWiseExplore();
+                await Assertions.Expect(Page).ToHaveURLAsync(new Regex(".*/wise-explore"));
+
+                Logger.Info("TC_31: wise Wise explore page loaded successfully.");
+            }, nameof(TC_031_Navigate_WiseExplore));
+        } 
     }
 }                  
